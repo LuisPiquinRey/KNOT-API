@@ -9,6 +9,8 @@ spring:
     username: root
     password: Slayer.khamra04/killer
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hibernate:
+      dialect: org.hibernate.dialect.MySQLDialect
   jpa:
     defer-datasource-initialization: true
     show-sql: true
