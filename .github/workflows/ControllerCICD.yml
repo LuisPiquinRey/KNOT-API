@@ -35,13 +35,8 @@ jobs:
         continue-on-error: true
 
   build:
-    strategy:
-      fail-fast: false
-      max-parallel: 3
-      matrix:
-        runs-on: [ubuntu-latest, windows-latest]
     needs: test
-    runs-on: ${{ matrix.runs-on }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Setup Java JDK
@@ -54,11 +49,7 @@ jobs:
       - name: Show content
         run: |
           echo "The repository ${{ github.repository }} contains the following files:"
-          if [ "${{ runner.os }}" == "Linux" ]; then
-            ls -la
-          elif [ "${{ runner.os }}" == "Windows" ]; then
-            powershell -Command "Get-ChildItem -Force"
-          fi
+          ls -la
           echo "Running action: ${{ github.action }}"
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4.6.2
