@@ -58,4 +58,7 @@ jobs:
         uses: actions/upload-artifact@v4.6.2
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: |
+            ${{ github.workspace }}/target/*.jar
+            ${{ github.workspace }}/target/classes/
+            ${{ github.workspace }}/src/
