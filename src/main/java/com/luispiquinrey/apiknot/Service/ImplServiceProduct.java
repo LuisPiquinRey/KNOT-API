@@ -18,7 +18,8 @@ public class ImplServiceProduct implements IServiceProduct {
     @Autowired
     private final RepositoryProductJpa repositoryProduct;
 
-    public ImplServiceProduct(RepositoryProductJpa repositoryProduct) {
+    public ImplServiceProduct(RepositoryProductJpa
+                                      repositoryProduct) {
         this.repositoryProduct = Objects.requireNonNull(repositoryProduct, "RepositoryProduct cannot be null");
     }
 
