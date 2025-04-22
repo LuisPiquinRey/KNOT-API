@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: UserProject
+  output:
+    ansi:
+      enabled: always
+  datasource:
+    url: jdbc:mysql://localhost:3306/api_knot
+    username: root
+    password: Slayer.khamra04/killer
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    defer-datasource-initialization: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
