@@ -54,7 +54,11 @@ jobs:
       - name: Show content
         run: |
           echo "The repository ${{ github.repository }} contains the following files:"
-          ls -la
+          if [ "${{ runner.os }}" == "Linux" ]; then
+            ls -la
+          elif [ "${{ runner.os }}" == "Windows" ]; then
+            Get-ChildItem -Force
+          fi
           echo "Running action: ${{ github.action }}"
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4.6.2
@@ -64,3 +68,4 @@ jobs:
             ${{ github.workspace }}/target/*.jar
             ${{ github.workspace }}/target/classes/
             ${{ github.workspace }}/src/
+
