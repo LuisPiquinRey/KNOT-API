@@ -32,8 +32,7 @@ jobs:
         run: |
           echo "Test results:"
           cat target/surefire-reports/*.txt
-        continue-on-error: true  # Esto sigue ejecutándose incluso si el test falla, para ver los resultados.
-
+        continue-on-error: true
   build:
     strategy:
       fail-fast: false
