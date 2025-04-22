@@ -25,15 +25,13 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Check Java version
         run: java -version
-      - name: Tester of the Application
+      - name: Run tests with Maven
         run: mvn test
       - name: Show test results
         run: |
           echo "Test results:"
           cat target/surefire-reports/*.txt
-      - name: The job has failed
-        if: ${{ failure() }}
-        run: echo "::error The test failed :("
+        continue-on-error: true  # Esto sigue ejecutándose incluso si el test falla, para ver los resultados.
 
   build:
     strategy:
@@ -51,12 +49,6 @@ jobs:
           java-version: '21'
       - name: Build with Maven
         run: mvn clean install
-      - name: Verify build status
-        run: |
-          if [ $? -ne 0 ]; then
-            echo "Build failed!"
-            exit 1
-          fi
       - name: Show content
         run: |
           echo "The repository ${{ github.repository }} contains the following files:"
@@ -67,7 +59,3 @@ jobs:
         with:
           name: java-app
           path: '${{ github.workspace }}/target/*.jar'
-
-
-
-
