@@ -31,7 +31,6 @@ jobs:
         run: |
           echo "Test results:"
           cat target/surefire-reports/*.txt
-
   build:
     needs: test
     runs-on: ubuntu-latest
@@ -49,13 +48,9 @@ jobs:
           echo "The repository ${{ github.repository }} contains the following files:"
           ls -la
           echo "Running action: ${{ github.action }}"
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4.6.2
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: |
-            ${{ github.workspace }}/target/*.jar
-            ${{ github.workspace }}/target/classes/
-            ${{ github.workspace }}/src/
+          path: target/*.jar
         if: success()
-
