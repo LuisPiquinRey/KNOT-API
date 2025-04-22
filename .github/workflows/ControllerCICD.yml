@@ -57,7 +57,7 @@ jobs:
           if [ "${{ runner.os }}" == "Linux" ]; then
             ls -la
           elif [ "${{ runner.os }}" == "Windows" ]; then
-            Get-ChildItem -Force
+            powershell -Command "Get-ChildItem -Force"
           fi
           echo "Running action: ${{ github.action }}"
       - name: Upload artifact for deployment job
@@ -68,4 +68,3 @@ jobs:
             ${{ github.workspace }}/target/*.jar
             ${{ github.workspace }}/target/classes/
             ${{ github.workspace }}/src/
-
