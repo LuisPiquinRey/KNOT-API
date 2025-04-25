@@ -1,25 +1,18 @@
-package com.luispiquinrey.apiknot.RepositoryProduct;
+package com.luispiquinrey.apiknot.Repository;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;  // Cambiado de BeforeAll a BeforeEach
 import static org.mockito.Mockito.when;
 
-import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.luispiquinrey.apiknot.Entities.Product;
-import com.luispiquinrey.apiknot.Repository.RepositoryProductJpa;
-
-import java.util.Optional;
 
 
 @DataJpaTest
