@@ -69,6 +69,8 @@ public class ImplServiceProduct implements IServiceProduct {
     public Iterable<Product> findAllProducts() {
         return repositoryProduct.findAll();
     }
+
+    @Transactional
     public void buyProduct(List<PurchaseItem> items) {
         for (PurchaseItem item : items) {
             try {
