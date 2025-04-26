@@ -8,6 +8,9 @@ import com.luispiquinrey.apiknot.Entities.DTO.PurchaseItem;
 import com.luispiquinrey.apiknot.Entities.Product;
 import com.luispiquinrey.apiknot.Repository.RepositoryProductJpa;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,7 @@ public class ImplServiceProduct implements IServiceProduct {
 
     @Override
     @Transactional
+    @CachePut(value = "productCache", key = "#product.product_id")
     public Product createProduct(Product product) {
         if (repositoryProduct.existsById(product.getProduct_id())) {
             throw new RuntimeException("Product with ID " + product.getProduct_id() + " already exists");
@@ -34,6 +38,7 @@ public class ImplServiceProduct implements IServiceProduct {
 
     @Override
     @Transactional
+    @CachePut(value = "productCache", key = "#product.product_id")
     public Product updateProduct(Product product) {
         Objects.requireNonNull(product, "Product cannot be null");
         Objects.requireNonNull(product.getProduct_id(), "Product ID cannot be null");
@@ -46,6 +51,7 @@ public class ImplServiceProduct implements IServiceProduct {
 
     @Override
     @Transactional
+    @CacheEvict(value = "productCache", key = "#product_id")
     public void deleteProduct(Integer product_id) {
         if (product_id == null) {
             return;
@@ -57,6 +63,7 @@ public class ImplServiceProduct implements IServiceProduct {
 
     @Override
     @Transactional
+    @Cacheable(value = "productCache", key = "#product_id")
     public Product findProductById(Integer product_id) {
         Objects.requireNonNull(product_id, "Product ID cannot be null");
 
@@ -66,6 +73,7 @@ public class ImplServiceProduct implements IServiceProduct {
 
     @Override
     @Transactional
+    @Cacheable(value = "productCache", key = "allProducts")
     public Iterable<Product> findAllProducts() {
         return repositoryProduct.findAll();
     }

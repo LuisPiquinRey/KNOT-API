@@ -7,6 +7,9 @@ import com.luispiquinrey.apiknot.Entities.User;
 
 import com.luispiquinrey.apiknot.Repository.RepositoryUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,6 +26,7 @@ public class ImplServiceUser implements IServiceUser {
 
     @Override
     @Transactional
+    @Cacheable(value = "userCache", key = "#email")
     public User findByEmail(String email) {
         validateEmailOrUsername(email);
         return repositoryUser.findByEmail(email)
@@ -31,6 +35,7 @@ public class ImplServiceUser implements IServiceUser {
 
     @Override
     @Transactional
+    @CachePut(value = "userCache", key = "#user.email")
     public void createUser(User user) {
         validateUserFields(user);
         repositoryUser.save(user);
@@ -39,6 +44,7 @@ public class ImplServiceUser implements IServiceUser {
 
     @Override
     @Transactional
+    @CacheEvict(value = "userCache", key = "#email")
     public void deleteUser(String email) {
         validateEmailOrUsername(email);
         Optional<User> user = repositoryUser.findByEmail(email);
@@ -52,6 +58,7 @@ public class ImplServiceUser implements IServiceUser {
 
     @Override
     @Transactional
+    @CachePut(value = "userCache", key = "#user.email")
     public void updateUser(User user) {
         validateUserFields(user);
         Optional<User> existingUser = repositoryUser.findByEmail(user.getEmail());
@@ -65,12 +72,14 @@ public class ImplServiceUser implements IServiceUser {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "userCache", key = "allUsers")
     public List<User> seeAllUsers() {
         return repositoryUser.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "userCache", key = "#username")
     public User findByUsername(String username) {
         validateEmailOrUsername(username);
         return repositoryUser.findByUsername(username)
