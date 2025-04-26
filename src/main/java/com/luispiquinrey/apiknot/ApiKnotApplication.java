@@ -16,5 +16,10 @@ public class ApiKnotApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		try {
+			throw new Exception("This is a test.");
+		} catch (Exception e) {
+			Sentry.captureException(e);
+		}
 	}
 }

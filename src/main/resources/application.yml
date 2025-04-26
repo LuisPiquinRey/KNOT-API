@@ -37,7 +37,8 @@ management:
   tracing:
     sampling:
       probability: 1.0
-
-
-
+sentry:
+  dsn: https://dccf839f99b7f1c330edbc15d78ece41@o4509219345530880.ingest.de.sentry.io/4509219347038289
+  send-default-pii: true
+  exception-resolver-order: -2147483647
 
