@@ -1,8 +1,11 @@
 package com.luispiquinrey.apiknot.Entities;
+import java.lang.annotation.Annotation;
 import java.sql.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,10 +13,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.hateoas.RepresentationModel;
 
 @Entity
 @Table(name = "Users")
-public class User implements Cloneable {
+public class User extends RepresentationModel<User> implements Cloneable{
 
     @Id
     @Email
@@ -133,4 +137,12 @@ public class User implements Cloneable {
                 ", products=" + products +
                 '}';
     }
+    public String toJson() throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(this);
+    }
+
+    public static User fromJson(String json) throws JsonProcessingException {
+        return new ObjectMapper().readValue(json, User.class);
+    }
+
 }
