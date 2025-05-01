@@ -1,10 +1,8 @@
 package com.luispiquinrey.apiknot.RestController;
 
 
-import java.util.List;
-
 import com.luispiquinrey.apiknot.Entities.DTO.PurchaseRequest;
-import com.luispiquinrey.apiknot.Entities.Product;
+import com.luispiquinrey.apiknot.Entities.Product.ProductPackage.Product;
 import com.luispiquinrey.apiknot.Entities.User;
 import com.luispiquinrey.apiknot.Service.ImplServiceProduct;
 import org.slf4j.Logger;

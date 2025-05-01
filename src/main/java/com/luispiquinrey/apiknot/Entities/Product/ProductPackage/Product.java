@@ -1,25 +1,19 @@
-package com.luispiquinrey.apiknot.Entities;
+package com.luispiquinrey.apiknot.Entities.Product.ProductPackage;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.luispiquinrey.apiknot.Entities.Category;
 import jakarta.persistence.*;
-import org.springframework.format.annotation.DateTimeFormat;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 
 @Entity
 @Table(name = "Products")
-public class Product {
-    @JsonProperty("expiration_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "expiration_date")
-    private LocalDate expiration_date;
-
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "product_type")
+public abstract class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("product_id")
@@ -53,11 +47,10 @@ public class Product {
         inverseJoinColumns = @jakarta.persistence.JoinColumn(name = "category_id")
     )
     private List<Category> categories;
+    public abstract void discount();
 
-
-    public Product(LocalDate expiration_date, Integer product_id, String brand, @Min(0) @Max(1000) Integer stock,
+    public Product(Integer product_id, String brand, @Min(0) @Max(1000) Integer stock,
             @Positive float price, List<Category> categories) {
-        this.expiration_date = expiration_date;
         this.product_id = product_id;
         this.brand = brand;
         this.stock = stock;
@@ -74,7 +67,6 @@ public class Product {
            "\n🏷️ Brand         : " + brand +
            "\n📦 Stock         : " + stock +
            "\n💰 Price         : $" + price +
-           "\n📅 Expiration    : " + expiration_date +
            "\n🏷️ Categories    : " + (categories != null ? categories.size() + " category(ies)" : "none");
     }
 
@@ -122,19 +114,5 @@ public class Product {
     }
     public void setQrCode(byte[] qrCode) {
         this.qrCode = qrCode;
-    }
-    public LocalDate getExpiration_date() {
-        return expiration_date;
-    }
-    public void setExpiration_date(LocalDate expiration_date) {
-        this.expiration_date = expiration_date;
-    }
-
-    public String toJson() throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(this);
-    }
-
-    public static User fromJson(String json) throws JsonProcessingException {
-        return new ObjectMapper().readValue(json, User.class);
     }
 }
