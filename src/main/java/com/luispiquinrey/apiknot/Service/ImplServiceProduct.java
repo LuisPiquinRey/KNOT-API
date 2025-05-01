@@ -5,7 +5,7 @@ import java.util.Objects;
 
 
 import com.luispiquinrey.apiknot.Entities.DTO.PurchaseItem;
-import com.luispiquinrey.apiknot.Entities.Product;
+import com.luispiquinrey.apiknot.Entities.Product.ProductPackage.Product;
 import com.luispiquinrey.apiknot.Repository.RepositoryProductJpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -73,7 +73,6 @@ public class ImplServiceProduct implements IServiceProduct {
 
     @Override
     @Transactional
-    @Cacheable(value = "productCache", key = "allProducts")
     public Iterable<Product> findAllProducts() {
         return repositoryProduct.findAll();
     }

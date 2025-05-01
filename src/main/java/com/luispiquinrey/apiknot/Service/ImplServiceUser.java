@@ -79,7 +79,6 @@ public class ImplServiceUser implements IServiceUser {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "userCache", key = "#allUsers")
     public List<User> seeAllUsers() {
         return repositoryUser.findAll();
     }

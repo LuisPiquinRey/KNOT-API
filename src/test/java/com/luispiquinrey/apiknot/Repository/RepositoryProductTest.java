@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import com.luispiquinrey.apiknot.Entities.Product;
+import com.luispiquinrey.apiknot.Entities.Product.ProductPackage.Product;
 
 
 @DataJpaTest

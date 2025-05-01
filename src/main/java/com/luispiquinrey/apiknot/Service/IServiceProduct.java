@@ -1,7 +1,7 @@
 package com.luispiquinrey.apiknot.Service;
 
 
-import com.luispiquinrey.apiknot.Entities.Product;
+import com.luispiquinrey.apiknot.Entities.Product.ProductPackage.Product;
 
 public interface  IServiceProduct {
     public Product createProduct(Product product);
