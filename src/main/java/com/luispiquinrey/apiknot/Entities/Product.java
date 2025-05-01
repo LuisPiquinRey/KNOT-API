@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import jakarta.validation.constraints.Max;
@@ -126,5 +128,13 @@ public class Product {
     }
     public void setExpiration_date(LocalDate expiration_date) {
         this.expiration_date = expiration_date;
+    }
+
+    public String toJson() throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(this);
+    }
+
+    public static User fromJson(String json) throws JsonProcessingException {
+        return new ObjectMapper().readValue(json, User.class);
     }
 }

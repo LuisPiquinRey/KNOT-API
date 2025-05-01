@@ -1,11 +1,9 @@
 package com.luispiquinrey.apiknot.Service;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.luispiquinrey.apiknot.Entities.User;
-
 import com.luispiquinrey.apiknot.Repository.RepositoryUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -14,12 +12,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class ImplServiceUser implements IServiceUser {
 
-    @Autowired
+    private static final Logger logger = LoggerFactory.getLogger(ImplServiceUser.class);
+
     private final RepositoryUser repositoryUser;
 
+    @Autowired
     public ImplServiceUser(RepositoryUser repositoryUser) {
         this.repositoryUser = repositoryUser;
     }
@@ -36,21 +39,25 @@ public class ImplServiceUser implements IServiceUser {
     @Override
     @Transactional
     @CachePut(value = "userCache", key = "#user.email")
-    public void createUser(User user) {
+    public User createUser(User user) {
         validateUserFields(user);
-        repositoryUser.save(user);
-        System.out.println("\u001B[32mUser created: " + user.toString() + "\u001B[0m");
+        try{
+            User savedUser = repositoryUser.save(user);
+            return savedUser;
+        }catch(Exception e){}
+        throw new EntityNotFoundException("User not found with email: " + user.getEmail());
     }
+
 
     @Override
     @Transactional
-    @CacheEvict(value = "userCache", key = "#email")
+    @CacheEvict(value = "userCache", key = "#user.email")
     public void deleteUser(String email) {
         validateEmailOrUsername(email);
         Optional<User> user = repositoryUser.findByEmail(email);
         if (user.isPresent()) {
             repositoryUser.delete(user.get());
-            System.out.println("\u001B[31mUser deleted: " + user.toString() + "\u001B[0m");
+            logger.info("User deleted: {}", user.get());
         } else {
             throw new EntityNotFoundException("User not found with email: " + email);
         }
@@ -64,7 +71,7 @@ public class ImplServiceUser implements IServiceUser {
         Optional<User> existingUser = repositoryUser.findByEmail(user.getEmail());
         if (existingUser.isPresent()) {
             repositoryUser.save(user);
-            System.out.println("\u001B[33mUser updated: " + user.toString() + "\u001B[0m");
+            logger.info("User updated: {}", user);
         } else {
             throw new EntityNotFoundException("User not found with email: " + user.getEmail());
         }
@@ -72,7 +79,7 @@ public class ImplServiceUser implements IServiceUser {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "userCache", key = "allUsers")
+    @Cacheable(value = "userCache", key = "#allUsers")
     public List<User> seeAllUsers() {
         return repositoryUser.findAll();
     }
@@ -102,3 +109,4 @@ public class ImplServiceUser implements IServiceUser {
         }
     }
 }
+
