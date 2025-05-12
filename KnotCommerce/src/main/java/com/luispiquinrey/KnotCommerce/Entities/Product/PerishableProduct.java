@@ -24,7 +24,7 @@ public class PerishableProduct extends Product implements PrototypeProduct {
         super();
     }
 
-    public PerishableProduct(boolean available, Integer id_Product, String name, double price, String description,
+    public PerishableProduct(boolean available, Long id_Product, String name, double price, String description,
                             Integer stock, LocalDate expirationDate, Double recommendedTemperature) {
         super(available, id_Product, name, price, description, stock);
         this.expirationDate = expirationDate;

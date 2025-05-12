@@ -18,7 +18,7 @@ public class NoPerishableProduct extends Product implements PrototypeProduct {
         super();
     }
 
-    public NoPerishableProduct(boolean available, Integer id_Product, String name, double price,
+    public NoPerishableProduct(boolean available, Long id_Product, String name, double price,
                             String description, Integer stock, String warrantyPeriod) {
         super(available, id_Product, name, price, description, stock);
         this.warrantyPeriod = warrantyPeriod;

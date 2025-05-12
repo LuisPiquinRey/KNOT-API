@@ -42,7 +42,7 @@ public abstract class Product implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_Product")
     @JsonProperty("id_Product")
-    private Integer id_Product;
+    private Long id_Product;
 
     @Column(name="name")
     @JsonProperty("name")
@@ -75,7 +75,7 @@ public abstract class Product implements Serializable{
 
     public Product() {}
 
-    public Product(boolean available, Integer id_Product, String name, double price, String description, Integer stock) {
+    public Product(boolean available, Long id_Product, String name, double price, String description, Integer stock) {
         this.available = available;
         this.id_Product = id_Product;
         this.name = name;
@@ -97,11 +97,11 @@ public abstract class Product implements Serializable{
         this.available = available;
     }
 
-    public Integer getId_Product() {
+    public Long getId_Product() {
         return id_Product;
     }
 
-    public void setId_Product(Integer id_Product) {
+    public void setId_Product(Long id_Product) {
         this.id_Product = id_Product;
     }
 
