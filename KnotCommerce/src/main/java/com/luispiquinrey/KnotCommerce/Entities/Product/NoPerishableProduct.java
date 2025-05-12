@@ -8,7 +8,7 @@ import jakarta.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("NoPerishableProduct")
-public class NoPerishableProduct extends Product {
+public class NoPerishableProduct extends Product implements PrototypeProduct {
 
     @Column(name = "warranty_period")
     @JsonProperty("warranty_period")
@@ -44,5 +44,18 @@ public class NoPerishableProduct extends Product {
             "\n   ✅ Available           : " + (isAvailable() ? "Yes" : "No") +
             "\n   🛡️ Warranty Period     : " + (warrantyPeriod != null ? warrantyPeriod : "N/A") +
             "\n}";
+    }
+
+    @Override
+    public Product clone() {
+        return new NoPerishableProduct(
+            this.isAvailable(),
+            this.getId_Product(),
+            this.getName(),
+            this.getPrice(),
+            this.getDescription(),
+            this.getStock(),
+            this.warrantyPeriod
+        );
     }
 }

@@ -10,7 +10,7 @@ import jakarta.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("PerishableProduct")
-public class PerishableProduct extends Product {
+public class PerishableProduct extends Product implements PrototypeProduct {
 
     @Column(name = "expiration_date")
     @JsonProperty("expiration_date")
@@ -50,8 +50,8 @@ public class PerishableProduct extends Product {
     @Override
     public String toString() {
         return """
-                \ud83e\udd6b Perishable Product {
-                \ud83c\udd94 ID                    : """ + getId_Product() +
+                🥫 Perishable Product {
+                🆔 ID                    : """ + getId_Product() +
             "\n   🏷️ Name                  : \"" + getName() + "\"" +
             "\n   💰 Price                 : $" + getPrice() +
             "\n   📝 Description           : \"" + getDescription() + "\"" +
@@ -60,5 +60,19 @@ public class PerishableProduct extends Product {
             "\n   📅 Expiration Date       : " + (expirationDate != null ? expirationDate : "N/A") +
             "\n   ❄️ Recommended Temp.     : " + (recommendedTemperature != null ? recommendedTemperature + "°C" : "N/A") +
             "\n}";
+    }
+
+    @Override
+    public Product clone() {
+        return new PerishableProduct(
+                this.isAvailable(),
+                this.getId_Product(),
+                this.getName(),
+                this.getPrice(),
+                this.getDescription(),
+                this.getStock(),
+                this.expirationDate,
+                this.recommendedTemperature
+        );
     }
 }
