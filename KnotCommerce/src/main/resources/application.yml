@@ -1,0 +1,23 @@
+spring:
+    application:
+        name: KnotCommerce
+    datasource:
+        url: jdbc:mysql://localhost:3306/knotcommerce
+        username: root
+        password: Slayer.khamra04/killer
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+        hibernate:
+            ddl-auto: create-drop
+        show-sql: true
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQLDialect
+    output:
+        ansi:
+            enabled: ALWAYS
+server:
+    port: 8080
+    servlet:
+        context-path: /api
+    shutdown: immediate
