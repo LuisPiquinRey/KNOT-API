@@ -7,15 +7,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @DiscriminatorValue("PerishableProduct")
 public class PerishableProduct extends Product implements PrototypeProduct {
 
+    @NotNull(message = "Expiration date cannot be null")
+    @Future(message = "Expiration date must be in the future")
     @Column(name = "expiration_date")
     @JsonProperty("expiration_date")
     private LocalDate expirationDate;
 
+    @NotNull(message = "Recommended temperature cannot be null")
     @Column(name = "recommended_temperature")
     @JsonProperty("recommended_temperature")
     private Double recommendedTemperature;

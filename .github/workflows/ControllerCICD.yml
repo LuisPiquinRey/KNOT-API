@@ -31,11 +31,11 @@ jobs:
 
       - name: Run tests with Maven
         run: mvn test
+        working-directory: ./KnotCommerce
 
       - name: Show test results
-        run: |
-          echo "Test results:"
-          cat target/surefire-reports/*.txt
+        run: cat target/surefire-reports/*.txt
+        working-directory: ./KnotCommerce
 
   build:
     needs: test
@@ -51,16 +51,17 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean install
+        working-directory: ./KnotCommerce
 
       - name: Show content
         run: |
           echo "The repository ${{ github.repository }} contains the following files:"
           ls -la
-          echo "Running action: ${{ github.action }}"
+        working-directory: ./KnotCommerce
 
       - name: Upload artifact
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: target/*.jar
+          path: /target/*.jar

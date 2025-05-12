@@ -1,16 +1,10 @@
 package com.luispiquinrey.KnotCommerce.Entities;
 
 import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "Category",
@@ -27,10 +21,14 @@ public class Category implements Serializable {
 
     @Column(name = "name")
     @JsonProperty("name")
+    @NotBlank(message = "Name cannot be blank")
+    @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
     private String name;
 
     @Column(name = "description")
     @JsonProperty("description")
+    @NotBlank(message = "Description cannot be blank")
+    @Size(min = 5, max = 100, message = "Description must be between 5 and 100 characters")
     private String description;
 
     public Category() {}
@@ -64,13 +62,14 @@ public class Category implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
     @Override
     public String toString() {
         return """
-                \ud83d\uddc2\ufe0f Category Details {
-                \ud83c\udd94 ID           : """ + id_Category +
-            "\n   🏷️ Name         : \"" + name + "\"" +
-            "\n   📝 Description  : \"" + description + "\"" +
-            "\n}";
+                🗂️ Category Details {
+                🔔 ID           : """ + id_Category +
+                "\n   🏷️ Name         : \"" + name + "\"" +
+                "\n   📝 Description  : \"" + description + "\"" +
+                "\n}";
     }
 }

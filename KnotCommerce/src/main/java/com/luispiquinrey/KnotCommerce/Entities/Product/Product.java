@@ -3,6 +3,8 @@ package com.luispiquinrey.KnotCommerce.Entities.Product;
 import java.io.Serializable;
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,6 +24,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 
 @Inheritance(strategy=jakarta.persistence.InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="product_type",
@@ -46,18 +50,22 @@ public abstract class Product implements Serializable{
 
     @Column(name="name")
     @JsonProperty("name")
+    @Length(min=5, max=20, message = "Name must be between 5 and 20 characters")
     private String name;
 
     @Column(name="price")
     @JsonProperty("price")
+    @Positive(message = "Price must be positive")
     private double price;
 
     @Column(name="description")
     @JsonProperty("description")
+    @Length(min=5, max=100, message = "Description must be between 5 and 100 characters")
     private String description;
 
     @Column(name="stock")
     @JsonProperty("stock")
+    @Min(value = 0, message = "Stock must be greater than or equal to 0")
     private Integer stock;
 
     @Version
