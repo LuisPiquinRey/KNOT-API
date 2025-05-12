@@ -21,3 +21,16 @@ server:
     servlet:
         context-path: /api
     shutdown: immediate
+logging:
+    charset:
+        console: UTF-8
+    pattern:
+        console: "
+%clr(%d{yy-MM-dd E HH:mm:ss.SSS}){red}  \
+%clr(%-5level){yellow}  \
+%clr(${PID}){green}  \
+%clr(---){cyan}  \
+%clr([%thread]){blue}  \
+%clr(%-40.40logger{0}){magenta}  \
+%clr(:){faint}  \
+%clr(%msg){white}%n%wex"
