@@ -124,7 +124,6 @@ public class ImplServiceProduct implements IServiceProduct {
             System.out.println("\u001B[31m❌ Failed to update stock for product ID " + id + ". 🕵️‍♂️\u001B[0m");
         }
     }
-
     @Override
     public Product getProductOrThrow(Long id_Product) {
         return repositoryProduct.findById(id_Product)

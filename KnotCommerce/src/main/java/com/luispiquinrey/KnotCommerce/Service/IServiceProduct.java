@@ -1,7 +1,6 @@
 package com.luispiquinrey.KnotCommerce.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.luispiquinrey.KnotCommerce.Entities.Category;
 import com.luispiquinrey.KnotCommerce.Entities.Product.Product;

@@ -4,7 +4,7 @@ spring:
     datasource:
         url: jdbc:mysql://localhost:3306/knotcommerce
         username: root
-        password: Slayer.khamra04/killer
+        password: ENC(ktL34tS1spH/eiMOqJ+uzXWWtqRjOLobyviv1BFNi836KZPQAIqPnA==)
         driver-class-name: com.mysql.cj.jdbc.Driver
     jpa:
         hibernate:
@@ -34,3 +34,7 @@ logging:
 %clr(%-40.40logger{0}){magenta}  \
 %clr(:){faint}  \
 %clr(%msg){white}%n%wex"
+jasypt:
+    encryptor:
+        password: LuisPiquinRey
+        algorithm: PBEWithMD5AndDES
