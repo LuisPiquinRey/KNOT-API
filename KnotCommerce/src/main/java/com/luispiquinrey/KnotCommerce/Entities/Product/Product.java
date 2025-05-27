@@ -21,6 +21,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
@@ -74,6 +75,7 @@ public abstract class Product implements Serializable{
     public Integer version;
 
     @ManyToMany
+    @OrderBy("name")
     @JoinTable(
         name = "Product_Category",
         joinColumns = @JoinColumn(name = "id_Product"),

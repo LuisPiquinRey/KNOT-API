@@ -21,7 +21,7 @@ public class PerishableProduct extends Product implements PrototypeProduct {
     private LocalDate expirationDate;
 
     @NotNull(message = "Recommended temperature cannot be null")
-    @Column(name = "recommended_temperature")
+    @Column(name = "recommended_temperature",precision=2)
     @JsonProperty("recommended_temperature")
     private Double recommendedTemperature;
 
