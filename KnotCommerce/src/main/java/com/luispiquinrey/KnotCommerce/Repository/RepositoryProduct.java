@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.luispiquinrey.KnotCommerce.Entities.Category;
+import com.luispiquinrey.KnotCommerce.Entities.Product.PerishableProduct;
 import com.luispiquinrey.KnotCommerce.Entities.Product.Product;
 
 import jakarta.transaction.Transactional;
@@ -37,5 +38,8 @@ public interface RepositoryProduct extends JpaRepository<Product, Long> {
     @Transactional
     @Query("UPDATE Product p SET p.stock = :stock WHERE p.id = :id")
     void updateStock(@Param("id") Long id, @Param("stock") int stock);
+
+    @Query("SELECT p FROM PerishableProduct p")
+    List<PerishableProduct> findAllPerishable();
 }
 

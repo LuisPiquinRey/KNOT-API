@@ -1,6 +1,10 @@
 package com.luispiquinrey.KnotCommerce.Entities.Product;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
