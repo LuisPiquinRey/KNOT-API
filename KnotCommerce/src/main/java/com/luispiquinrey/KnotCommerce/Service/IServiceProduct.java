@@ -15,4 +15,5 @@ public interface IServiceProduct {
     List<Product> findByPriceRange(double minPrice, double maxPrice);
     void deleteByCategory(Category category);
     void updateStock(Long id, int stock);
+    List<Product> findAllProducts();
 }

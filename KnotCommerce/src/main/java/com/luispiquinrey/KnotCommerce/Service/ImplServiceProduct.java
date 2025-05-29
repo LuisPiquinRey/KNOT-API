@@ -129,4 +129,16 @@ public class ImplServiceProduct implements IServiceProduct {
         return repositoryProduct.findById(id_Product)
                 .orElseThrow(() -> new EntityNotFoundException("Product with ID " + id_Product + " not found."));
     }
+    @Override
+    public List<Product> findAllProducts() {
+        try {
+            List<Product> products = repositoryProduct.findAll();
+            System.out.println("\u001B[34m🔎 Found " + products.size() + " products in total.\u001B[0m");
+            return products;
+            } catch (Exception e) {
+                logger.error("🚨 Failed to retrieve all products. 🛑", e);
+                System.out.println("\u001B[31m❌ Failed to retrieve all products. 🕵️‍♂️\u001B[0m");
+                return List.of();
+            }
+        }
 }
