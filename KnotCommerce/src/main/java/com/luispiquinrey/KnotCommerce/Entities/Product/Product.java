@@ -1,16 +1,28 @@
 package com.luispiquinrey.KnotCommerce.Entities.Product;
 
 import java.io.Serializable;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.hibernate.validator.constraints.Length;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 import com.luispiquinrey.KnotCommerce.Entities.Category;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -38,6 +50,7 @@ import jakarta.validation.constraints.Positive;
         })
 public abstract class Product implements Serializable{
 
+    private static final Logger log = LoggerFactory.getLogger(Product.class);
 
     @Column(name="available",columnDefinition="BIT")
     @JsonProperty("available")
@@ -156,7 +169,11 @@ public abstract class Product implements Serializable{
     }
     public String productToJson() throws JsonProcessingException{
         ObjectMapper mapper=new ObjectMapper();
-        String json=mapper.writeValueAsString(this);
+        ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+        String json=writer.writeValueAsString(this);
+        log.info("""
+                \u001b[32m\ud83d\uded2 Product JSON formatted:
+                """ + json + "\u001B[0m");
         return json;
     }
     public List<Category> getCategories() {
@@ -164,5 +181,25 @@ public abstract class Product implements Serializable{
     }
     public void setCategories(List<Category> categories) {
         this.categories = categories;
+    }
+    @PostConstruct
+    public void generateQR(){
+        log.info("Generating QRCode");
+        try{
+            MultiFormatWriter writerQR = new MultiFormatWriter();
+            BitMatrix matrix = writerQR.encode(this.productToJson(), BarcodeFormat.QR_CODE, 250, 250);
+            String dirName = "qrcodes";
+            java.nio.file.Files.createDirectories(java.nio.file.Paths.get(dirName));
+
+            String fileName = dirName + "/product-" + (id_Product != null ? id_Product : "new") + ".png";
+            Path path = FileSystems.getDefault().getPath(fileName);
+
+            MatrixToImageWriter.writeToPath(matrix, "PNG", path);
+            log.info("QR Code generated at: " + path.toAbsolutePath());
+        } catch (WriterException | JsonProcessingException ex) {
+            log.error("Error to encode the product or to parse the product to Json", ex);
+        } catch (Exception ex) {
+            log.error("Error writing QR code to file", ex);
+        }
     }
 }
