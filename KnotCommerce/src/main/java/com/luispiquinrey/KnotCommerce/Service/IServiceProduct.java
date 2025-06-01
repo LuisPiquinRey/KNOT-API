@@ -4,12 +4,17 @@ import java.util.List;
 
 import com.luispiquinrey.KnotCommerce.Entities.Category;
 import com.luispiquinrey.KnotCommerce.Entities.Product.Product;
+import com.luispiquinrey.KnotCommerce.Exceptions.ProductCreationException;
+import com.luispiquinrey.KnotCommerce.Exceptions.ProductDeleteException;
+import com.luispiquinrey.KnotCommerce.Exceptions.ProductUpdateException;
+
+import jakarta.persistence.EntityNotFoundException;
 
 public interface IServiceProduct {
-    public Product getProductOrThrow(Long id_Product);
-    void deleteProductById(Long id_Product);
-    void updateProductById(Product product);
-    void createProduct(Product product);
+    public Product getProductOrThrow(Long id_Product) throws EntityNotFoundException;
+    void deleteProductById(Long id_Product) throws ProductDeleteException;
+    void updateProduct (Product product) throws ProductUpdateException;
+    void createProduct(Product product) throws ProductCreationException;
     List<Product> findAvailableProducts();
     List<Product> findByCategoryName(String categoryName);
     List<Product> findByPriceRange(double minPrice, double maxPrice);

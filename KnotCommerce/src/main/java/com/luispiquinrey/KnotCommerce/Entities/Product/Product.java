@@ -8,10 +8,10 @@ import java.util.List;
 import org.hibernate.validator.constraints.Length;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -48,6 +48,15 @@ import jakarta.validation.constraints.Positive;
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "description")
         })
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = NoPerishableProduct.class, name = "noPerishable"),
+    @JsonSubTypes.Type(value = PerishableProduct.class, name = "perishable")
+})
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type"
+)
 public abstract class Product implements Serializable{
 
     private static final Logger log = LoggerFactory.getLogger(Product.class);

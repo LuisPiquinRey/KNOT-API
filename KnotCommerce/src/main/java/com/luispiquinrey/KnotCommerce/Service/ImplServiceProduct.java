@@ -5,15 +5,20 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.luispiquinrey.KnotCommerce.Entities.Category;
 import com.luispiquinrey.KnotCommerce.Entities.Product.Product;
+import com.luispiquinrey.KnotCommerce.Exceptions.ProductCreationException;
+import com.luispiquinrey.KnotCommerce.Exceptions.ProductDeleteException;
+import com.luispiquinrey.KnotCommerce.Exceptions.ProductUpdateException;
 import com.luispiquinrey.KnotCommerce.Repository.RepositoryProduct;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Transactional
+@Service
 public class ImplServiceProduct implements IServiceProduct {
 
     @Autowired
@@ -33,11 +38,12 @@ public class ImplServiceProduct implements IServiceProduct {
         } else {
             logger.warn("❌ Cannot delete: Product with ID {} does not exist.", id_Product);
             System.out.println("\u001B[31m❌ Cannot delete: Product with ID " + id_Product + " does not exist. 🕵️‍♂️\u001B[0m");
+            throw new ProductDeleteException("Error deleting product: Product with ID " + id_Product + " does not exist.");
         }
     }
 
     @Override
-    public void updateProductById(Product product) {
+    public void updateProduct(Product product) throws ProductUpdateException{
         Long id = product.getId_Product();
         if (id == null) {
             logger.warn("❌ Cannot update: Product ID is null.");
@@ -50,20 +56,20 @@ public class ImplServiceProduct implements IServiceProduct {
         } else {
             logger.warn("❌ Cannot update: Product with ID {} does not exist.", id);
             System.out.println("\u001B[31m❌ Cannot update: Product with ID " + id + " does not exist. 🕵️‍♂️\u001B[0m");
+            throw new ProductUpdateException("Error updating product");
         }
     }
-
     @Override
-    public void createProduct(Product product) {
+    public void createProduct(Product product) throws ProductCreationException{
         try {
             repositoryProduct.save(product);
             System.out.println("\u001B[32m✅ Product created successfully! 🎉\u001B[0m");
         } catch (Exception e) {
             logger.error("🚨 Failed to create product. Possible causes: invalid data, database issues, or internal errors. 🛑", e);
             System.out.println("\u001B[31m❌ Failed to create product. Please check the logs for more details. 🕵️‍♂️\u001B[0m");
+            throw new ProductCreationException("Error creating product: " + e.getMessage());
         }
     }
-
     @Override
     public List<Product> findAvailableProducts() {
         try {
@@ -125,7 +131,7 @@ public class ImplServiceProduct implements IServiceProduct {
         }
     }
     @Override
-    public Product getProductOrThrow(Long id_Product) {
+    public Product getProductOrThrow(Long id_Product) throws EntityNotFoundException {
         return repositoryProduct.findById(id_Product)
                 .orElseThrow(() -> new EntityNotFoundException("Product with ID " + id_Product + " not found."));
     }
