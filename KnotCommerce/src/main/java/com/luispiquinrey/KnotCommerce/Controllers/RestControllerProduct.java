@@ -124,7 +124,7 @@ public class RestControllerProduct {
         try {
             iServiceProduct.deleteByCategory(category);
             return ResponseEntity.ok("Products in category '" + category.getName() + "' deleted successfully!");
-        } catch (ProductDeleteException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
         }

@@ -24,6 +24,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.luispiquinrey.KnotCommerce.Entities.Category;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -60,35 +61,70 @@ import jakarta.validation.constraints.Positive;
     property = "type"
 )
 @PropertySource("KnotCommerce/src/main/resources/validationProduct.yml")
+@Schema(
+    name = "Product",
+    description = "Representation of items",
+    example = """
+        {
+            "id_Category": 1,
+            "name": "Dairy",
+            "description": "Products derived from milk"
+        }
+    """
+)
 public abstract class Product implements Serializable{
 
     private static final Logger log = LoggerFactory.getLogger(Product.class);
 
+    @Schema(
+        description="Indicates if the product is available for purchase",
+        example= "true"
+    )
     @Column(name="available",columnDefinition="BIT")
     @JsonProperty("available")
     private boolean available;
 
+    @Schema(
+        description = "Unique identifier of the product",
+        example = "1"
+    )
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_Product")
     @JsonProperty("id_Product")
     private Long id_Product;
 
+    @Schema(
+        description = "Product name (5-20 characters)",
+        example = "Fresh Milk"
+    )
     @Column(name="name")
     @JsonProperty("name")
     @Length(min=5, max=20, message = "{product.length.name}")
     private String name;
 
+    @Schema(
+        description = "Price of the product (positive value)",
+        example = "2.5"
+    )
     @Column(name="price")
     @JsonProperty("price")
     @Positive(message = "{product.positive.price}")
     private double price;
 
+    @Schema(
+        description = "Short description of the product (5-100 characters)",
+        example = "1L organic milk"
+    )
     @Column(name="description")
     @JsonProperty("description")
     @Length(min=5, max=100, message = "{product.length.description}")
     private String description;
 
+    @Schema(
+        description = "Number of items available in stock (min 0)",
+        example = "100"
+    )
     @Column(name="stock")
     @JsonProperty("stock")
     @Min(value = 0, message = "{product.min.stock}")
@@ -99,6 +135,23 @@ public abstract class Product implements Serializable{
     @JsonIgnore
     private Integer version;
 
+    @Schema(
+        description = "Categories to which the product belongs",
+        example = """
+            [
+                {
+                    "id_Category": 1,
+                    "name": "Dairy",
+                    "description": "Products derived from milk"
+                },
+                {
+                    "id_Category": 2,
+                    "name": "Organic",
+                    "description": "Natural and pesticide-free items"
+                }
+            ]
+    """
+    )
     @ManyToMany
     @OrderBy("name")
     @JoinTable(
