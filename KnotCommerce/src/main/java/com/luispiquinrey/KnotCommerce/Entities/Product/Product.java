@@ -8,6 +8,8 @@ import java.util.List;
 import org.hibernate.validator.constraints.Length;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.PropertySource;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -57,6 +59,7 @@ import jakarta.validation.constraints.Positive;
     include = JsonTypeInfo.As.PROPERTY,
     property = "type"
 )
+@PropertySource("KnotCommerce/src/main/resources/validationProduct.yml")
 public abstract class Product implements Serializable{
 
     private static final Logger log = LoggerFactory.getLogger(Product.class);
@@ -73,28 +76,28 @@ public abstract class Product implements Serializable{
 
     @Column(name="name")
     @JsonProperty("name")
-    @Length(min=5, max=20, message = "Name must be between 5 and 20 characters")
+    @Length(min=5, max=20, message = "{product.length.name}")
     private String name;
 
     @Column(name="price")
     @JsonProperty("price")
-    @Positive(message = "Price must be positive")
+    @Positive(message = "{product.positive.price}")
     private double price;
 
     @Column(name="description")
     @JsonProperty("description")
-    @Length(min=5, max=100, message = "Description must be between 5 and 100 characters")
+    @Length(min=5, max=100, message = "{product.length.description}")
     private String description;
 
     @Column(name="stock")
     @JsonProperty("stock")
-    @Min(value = 0, message = "Stock must be greater than or equal to 0")
+    @Min(value = 0, message = "{product.min.stock}")
     private Integer stock;
 
     @Version
     @Column(name="version")
     @JsonIgnore
-    public Integer version;
+    private Integer version;
 
     @ManyToMany
     @OrderBy("name")

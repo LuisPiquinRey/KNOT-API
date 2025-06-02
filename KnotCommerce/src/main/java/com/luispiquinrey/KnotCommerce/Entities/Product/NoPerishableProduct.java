@@ -1,6 +1,7 @@
 package com.luispiquinrey.KnotCommerce.Entities.Product;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.context.annotation.PropertySource;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,11 +11,12 @@ import jakarta.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("NoPerishableProduct")
+@PropertySource("KnotCommerce/src/main/resources/validationProduct.yml")
 public class NoPerishableProduct extends Product implements PrototypeProduct {
 
     @Column(name = "warranty_period")
     @JsonProperty("warranty_period")
-    @Length(min=5, max=20, message = "Warranty period must be between 5 and 20 characters")
+    @Length(min=5, max=20, message = "{product.noPerishableProduct.length.warrantyPeriod}")
     private String warrantyPeriod;
 
     public NoPerishableProduct() {

@@ -1,6 +1,9 @@
 package com.luispiquinrey.KnotCommerce.Entities;
 
 import java.io.Serializable;
+
+import org.springframework.context.annotation.PropertySource;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -11,6 +14,7 @@ import jakarta.validation.constraints.Size;
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "description")
         })
+@PropertySource("KnotCommerce/src/main/resources/validationProduct.yml")
 public class Category implements Serializable {
 
     @Id
@@ -22,13 +26,13 @@ public class Category implements Serializable {
     @Column(name = "name")
     @JsonProperty("name")
     @NotBlank(message = "Name cannot be blank")
-    @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
+    @Size(min = 3, max = 50, message = "{category.length.name}")
     private String name;
 
     @Column(name = "description")
     @JsonProperty("description")
     @NotBlank(message = "Description cannot be blank")
-    @Size(min = 5, max = 100, message = "Description must be between 5 and 100 characters")
+    @Size(min = 5, max = 100, message = "{category.length.description}")
     private String description;
 
     public Category() {}

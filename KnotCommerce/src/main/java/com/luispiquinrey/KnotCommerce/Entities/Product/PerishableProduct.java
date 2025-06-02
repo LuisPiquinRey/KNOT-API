@@ -1,6 +1,9 @@
 package com.luispiquinrey.KnotCommerce.Entities.Product;
 
 import java.time.LocalDate;
+
+import org.springframework.context.annotation.PropertySource;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -10,15 +13,16 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @DiscriminatorValue("PerishableProduct")
+@PropertySource("KnotCommerce/src/main/resources/validationProduct.yml")
 public class PerishableProduct extends Product implements PrototypeProduct {
 
-    @NotNull(message = "Expiration date cannot be null")
-    @Future(message = "Expiration date must be in the future")
+    @NotNull(message = "{product.perishableProduct.notNull.expirationDate}")
+    @Future(message = "{product.perishableProduct.future.expirationDate}")
     @Column(name = "expiration_date")
     @JsonProperty("expiration_date")
     private LocalDate expirationDate;
 
-    @NotNull(message = "Recommended temperature cannot be null")
+    @NotNull(message = "{product.perishableProduct.notNull.temperature}")
     @Column(name = "recommended_temperature",precision=2)
     @JsonProperty("recommended_temperature")
     private Double recommendedTemperature;
