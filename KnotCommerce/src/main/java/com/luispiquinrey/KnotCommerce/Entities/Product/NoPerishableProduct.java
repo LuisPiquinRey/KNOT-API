@@ -1,13 +1,18 @@
 package com.luispiquinrey.KnotCommerce.Entities.Product;
 
+import java.util.List;
+
 import org.hibernate.validator.constraints.Length;
 import org.springframework.context.annotation.PropertySource;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.luispiquinrey.KnotCommerce.Entities.Category;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 @DiscriminatorValue("NoPerishableProduct")
@@ -23,9 +28,19 @@ public class NoPerishableProduct extends Product implements PrototypeProduct {
         super();
     }
 
-    public NoPerishableProduct(boolean available, Long id_Product, String name, double price,
-                            String description, Integer stock, String warrantyPeriod) {
-        super(available, id_Product, name, price, description, stock);
+    public NoPerishableProduct(boolean available, Long id_Product,
+            @Length(min = 5, max = 20, message = "{product.length.name}") String name,
+            @Positive(message = "{product.positive.price}") double price,
+            @Length(min = 5, max = 100, message = "{product.length.description}") String description,
+            @Min(value = 0, message = "{product.min.stock}") Integer stock, Integer version, List<Category> categories,
+            @Length(min = 5, max = 20, message = "{product.noPerishableProduct.length.warrantyPeriod}") String warrantyPeriod) {
+        super(available, id_Product, name, price, description, stock, version, categories);
+        this.warrantyPeriod = warrantyPeriod;
+    }
+
+    public NoPerishableProduct(String name, double price, Integer stock,
+            @Length(min = 5, max = 20, message = "{product.noPerishableProduct.length.warrantyPeriod}") String warrantyPeriod) {
+        super(name, price, stock);
         this.warrantyPeriod = warrantyPeriod;
     }
 
@@ -60,6 +75,8 @@ public class NoPerishableProduct extends Product implements PrototypeProduct {
             this.getPrice(),
             this.getDescription(),
             this.getStock(),
+            this.getVersion(),
+            this.getCategories(),
             this.warrantyPeriod
         );
     }

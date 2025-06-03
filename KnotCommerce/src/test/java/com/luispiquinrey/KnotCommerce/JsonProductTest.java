@@ -17,7 +17,7 @@ class JsonProductTest {
     @Test
     void testSerialize() throws Exception {
         Product product = new NoPerishableProduct(true, 1L, "Adidas Samba", 23.2,
-            "Classic shoes", 20, "2 years");
+            "Classic shoes", 20, null, null, "2 years");
         var jsonContent = json.write(product);
         assertEquals(
             jsonContent.getJson().replaceAll("\\s", ""),

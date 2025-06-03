@@ -163,15 +163,25 @@ public abstract class Product implements Serializable{
 
     public Product() {}
 
-    public Product(boolean available, Long id_Product, String name, double price, String description, Integer stock) {
+    public Product(boolean available, Long id_Product,
+            @Length(min = 5, max = 20, message = "{product.length.name}") String name,
+            @Positive(message = "{product.positive.price}") double price,
+            @Length(min = 5, max = 100, message = "{product.length.description}") String description,
+            @Min(value = 0, message = "{product.min.stock}") Integer stock, Integer version,
+            List<Category> categories) {
         this.available = available;
         this.id_Product = id_Product;
         this.name = name;
         this.price = price;
         this.description = description;
         this.stock = stock;
+        this.version = version;
+        this.categories = categories;
     }
-    public Product(String name, double price, Integer stock) {
+
+    public Product(@Length(min = 5, max = 20, message = "{product.length.name}") String name,
+            @Positive(message = "{product.positive.price}") double price,
+            @Min(value = 0, message = "{product.min.stock}") Integer stock) {
         this.name = name;
         this.price = price;
         this.stock = stock;
