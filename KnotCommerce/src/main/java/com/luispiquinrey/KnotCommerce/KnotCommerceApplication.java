@@ -13,10 +13,27 @@ import com.luispiquinrey.KnotCommerce.Entities.Product.NoPerishableProduct;
 import com.luispiquinrey.KnotCommerce.Entities.Product.Product;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
+
 @SpringBootApplication
 @EnableEncryptableProperties
 @EnableScheduling
 @EnableAsync
+@OpenAPIDefinition(
+	info=@Info(
+		title="Product microservice REST API Documentation",
+		description="REST API for managing the Product class, featuring a simple CRUD that implements modern" +
+		"practices and particular features such as QR code generation and handling large amounts of information through Spring Batch."
+		+ "Thanks to integration with the email management microservice, when a user purchases a product, they receive a confirmation email.",
+		version="v1",
+		contact=@Contact(
+			name="Luis Piquin Rey",
+			email="piquin.rey@gmail.com"
+		)
+	)
+)
 public class KnotCommerceApplication implements CommandLineRunner{
 
 	Logger log=LoggerFactory.getLogger(KnotCommerceApplication.class);
