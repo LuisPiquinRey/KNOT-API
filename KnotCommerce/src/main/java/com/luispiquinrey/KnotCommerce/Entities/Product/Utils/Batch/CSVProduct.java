@@ -2,8 +2,11 @@ package com.luispiquinrey.KnotCommerce.Entities.Product.Utils.Batch;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.annotation.AfterJob;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -23,23 +26,15 @@ import com.luispiquinrey.KnotCommerce.Entities.Product.PerishableProduct;
 @Configuration
 public class CSVProduct {
 
+    private static final Logger logger = LoggerFactory.getLogger(CSVProduct.class);
+
     @Bean
     public FlatFileItemReader<NoPerishableProduct> noPerishableProductReader() {
         return new FlatFileItemReaderBuilder<NoPerishableProduct>()
             .name("noPerishableProductReader")
             .resource(new ClassPathResource("CSV/csvNoPerishableProduct/dataNoPerishable.csv"))
-            .fixedLength()
-            .columns(
-                new Range(1, 5),
-                new Range(6, 15),
-                new Range(16, 35),
-                new Range(36, 45),
-                new Range(46, 95),
-                new Range(96, 100),
-                new Range(101, 105),
-                new Range(106, 125),
-                new Range(126, 145)
-            )
+            .delimited()
+            .delimiter(",")
             .names(
                 "available",
                 "id_Product",
@@ -51,28 +46,16 @@ public class CSVProduct {
                 "categories",
                 "warrantyPeriod"
             )
-            .fieldSetMapper(new NoPerishableProductFieldMapper())
-            .build();
-    }
-
+        .fieldSetMapper(new NoPerishableProductFieldMapper())
+        .build();
+}
     @Bean
     public FlatFileItemReader<PerishableProduct> perishableProductReader() {
         return new FlatFileItemReaderBuilder<PerishableProduct>()
             .name("perishableProductReader")
             .resource(new ClassPathResource("CSV/csvPerishableProduct/dataPerishable.csv"))
-            .fixedLength()
-            .columns(
-                new Range(1, 5),
-                new Range(6, 15),
-                new Range(16, 35),
-                new Range(36, 45),
-                new Range(46, 95),
-                new Range(96, 100),
-                new Range(101, 105),
-                new Range(106, 125),
-                new Range(126, 145),
-                new Range(146, 155)
-            )
+            .delimited()
+            .delimiter(",")
             .names(
                 "available",
                 "id_Product",
@@ -88,15 +71,16 @@ public class CSVProduct {
             .fieldSetMapper(new PerishableProductFieldMapper())
             .build();
     }
-
     @Bean
-    public JdbcBatchItemWriter<NoPerishableProduct> writer(DataSource dataSource) {
-        JdbcBatchItemWriter<NoPerishableProduct> writer = new JdbcBatchItemWriter<>();
+    public JdbcBatchItemWriter<PerishableProduct> writerPerishable(DataSource dataSource) {
+        JdbcBatchItemWriter<PerishableProduct> writer = new JdbcBatchItemWriter<>();
         writer.setSql("""
             INSERT INTO Product (
-                available, id_Product, name, price, description, stock, version, warrantyPeriod
+                product_type, id_product, available, description, name,
+                price, stock, version, expiration_date, recommended_temperature
             ) VALUES (
-                :available, :id_Product, :name, :price, :description, :stock, :version, :warrantyPeriod
+                'PERISHABLE', :id_Product, :available, :description, :name,
+                :price, :stock, :version, :expirationDate, :recommendedTemperature
             )
         """);
         writer.setDataSource(dataSource);
@@ -105,22 +89,62 @@ public class CSVProduct {
     }
 
     @Bean
-    public Step sampleStep(
+    public JdbcBatchItemWriter<NoPerishableProduct> writer(DataSource dataSource) {
+        JdbcBatchItemWriter<NoPerishableProduct> writerNoPerishable = new JdbcBatchItemWriter<>();
+        writerNoPerishable.setSql("""
+        INSERT INTO Product (
+            product_type, id_product, available, description, name,
+            price, stock, version, warranty_period
+        ) VALUES (
+            'NON_PERISHABLE', :id_Product, :available, :description, :name,
+            :price, :stock, :version, :warrantyPeriod
+        )
+    """);
+        writerNoPerishable.setDataSource(dataSource);
+        writerNoPerishable.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
+        return writerNoPerishable;
+    }
+
+    @Bean
+    public Step sampleStepNoPerishable(
         JobRepository jobRepository,
         PlatformTransactionManager transactionManager,
         FlatFileItemReader<NoPerishableProduct> noPerishableProductReader,
         JdbcBatchItemWriter<NoPerishableProduct> writer
     ) {
-        return new StepBuilder("sampleStep", jobRepository)
+        return new StepBuilder("sampleStepNoPerishable", jobRepository)
             .<NoPerishableProduct, NoPerishableProduct>chunk(10, transactionManager)
             .reader(noPerishableProductReader)
             .writer(writer)
+            .listener(new LoggingStepExecutionListener())
             .build();
     }
     @Bean
-    public Job sampleJob(JobRepository jobRepository, Step sampleStep) {
+    public Step deleteCsvStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+        return new StepBuilder("deleteCsvStep", jobRepository)
+            .tasklet(new DeleteCsvTasklet(), transactionManager)
+            .allowStartIfComplete(true)
+            .build();
+    }
+    @Bean
+    public Step sampleStepPerishable(
+        JobRepository jobRepository,
+        PlatformTransactionManager transactionManager,
+        FlatFileItemReader<PerishableProduct> perishableProductReader,
+        JdbcBatchItemWriter<PerishableProduct> writerPerishable
+    ) {
+        return new StepBuilder("sampleStepPerishable", jobRepository)
+            .<PerishableProduct, PerishableProduct>chunk(10, transactionManager)
+            .reader(perishableProductReader)
+            .writer(writerPerishable)
+            .build();
+    }
+    @Bean
+    public Job sampleJob(JobRepository jobRepository, Step sampleStepNoPerishable,Step sampleStepPerishable,Step deleteCsvStep) {
         return new JobBuilder("sampleJob", jobRepository)
-                .start(sampleStep)
+                .start(sampleStepNoPerishable)
+                .next(sampleStepPerishable)
+                .next(deleteCsvStep)
                 .build();
     }
 }

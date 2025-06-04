@@ -1,11 +1,15 @@
 package com.luispiquinrey.KnotCommerce;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -38,6 +42,9 @@ public class KnotCommerceApplication implements CommandLineRunner{
 
 	Logger log=LoggerFactory.getLogger(KnotCommerceApplication.class);
 
+	@Autowired
+	private ApplicationContext appContext;
+
 	public static void main(String[] args) {
 		new SpringApplicationBuilder().sources(KnotCommerceApplication.class)
 				.web(WebApplicationType.SERVLET)
@@ -47,6 +54,12 @@ public class KnotCommerceApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
+
+		String[] beans=appContext.getBeanDefinitionNames();
+		Arrays.sort(beans);
+		for(String bean:beans){
+			System.out.println(bean + " of Type ::" + appContext.getBean(bean).getClass());
+		}
 		log.info("Creating test product to generate QR code...");
 
     	Product product = new NoPerishableProduct();
@@ -59,5 +72,7 @@ public class KnotCommerceApplication implements CommandLineRunner{
     	product.generateQR();
 
     	log.info("Test product QR code generated.");
+
+
 	}
 }
