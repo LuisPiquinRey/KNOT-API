@@ -62,7 +62,7 @@ public class RestControllerProduct {
         description = "HTTP Status CREATED"
     )
     @PostMapping("/createProduct")
-    public ResponseEntity<?> createProduct(@Valid @RequestBody Product product, BindingResult binding) {
+    public ResponseEntity<?> createProduct(@Valid @RequestBody Product product, BindingResult binding) throws Exception {
         if(binding.hasErrors()){
             StringBuilder sb = new StringBuilder();
             binding.getAllErrors().forEach(error -> sb.append(error.getDefaultMessage()).append("\n"));

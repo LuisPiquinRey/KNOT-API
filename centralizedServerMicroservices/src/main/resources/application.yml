@@ -1,0 +1,35 @@
+spring:
+    application:
+        name: centralizedServerMicroservices
+    profiles:
+        active: git
+    output:
+        ansi:
+            enabled: ALWAYS
+    cloud:
+        config:
+            server:
+                git:
+                    uri: "https://github.com/LuisPiquinRey/centralizedServerMicroservices.git"
+                    username: LuisPiquinRey
+                    password: ${GITHUB_TOKEN}
+                    default-label: main
+                    timeout:  5
+                    clone-on-start: true
+                    force-pull: true
+logging:
+    charset:
+        console: UTF-8
+    pattern:
+        console: "\
+%clr(%d{yy-MM-dd E HH:mm:ss.SSS}){bright_yellow}  \
+%clr(%-5level){green}  \
+%clr(${PID}){green}  \
+%clr(---){green}  \
+%clr([%thread]){green}  \
+%clr(%-40.40logger{0}){green}  \
+%clr(:){green}  \
+%clr(%msg){white}%n%wex"
+
+server:
+    port: 8071

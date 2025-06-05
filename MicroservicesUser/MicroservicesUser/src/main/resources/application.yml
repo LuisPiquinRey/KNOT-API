@@ -1,0 +1,18 @@
+spring:
+    application:
+        name: MicroservicesUser
+    output:
+        ansi:
+            enabled: ALWAYS
+    security:
+        user:
+            name: LuisPiquinRey
+            password: ${SPRING_SECURITY_PASSWORD}
+logging:
+    level:
+        org:
+        springframework:
+            security: ${SPRING_SECURITY_LOG_TRACE:TRACE}
+
+server:
+    port: 8090
