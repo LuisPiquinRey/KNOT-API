@@ -1,6 +1,11 @@
 spring:
     application:
         name: KnotCommerce
+    cloud:
+        config:
+            enabled: true
+    liquibase:
+        change-log: classpath:db/changelog/db.changelog-master.xml
     output:
         ansi:
             enabled: ALWAYS
@@ -8,11 +13,14 @@ spring:
         basename: ValidationMessages
     batch:
         jdbc:
-            initialize-schema: always
+            initialize-schema: never
         job:
             enabled: true
     config:
-        import: "configserver:http://localhost:8071/"
+        import: configserver:http://localhost:8071/
+    jpa:
+        hibernate:
+            ddl-auto: none
 server:
     port: 8080
     servlet:
