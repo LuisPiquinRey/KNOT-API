@@ -17,7 +17,6 @@ import com.luispiquinrey.KnotCommerce.Repository.RepositoryProduct;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
-@Transactional
 @Service
 public class ImplServiceProduct implements IServiceProduct {
 
@@ -30,6 +29,7 @@ public class ImplServiceProduct implements IServiceProduct {
         this.repositoryProduct = repositoryProduct;
     }
 
+    @Transactional
     @Override
     public void deleteProductById(Long id_Product) {
         if (repositoryProduct.existsById(id_Product)) {
@@ -42,6 +42,8 @@ public class ImplServiceProduct implements IServiceProduct {
         }
     }
 
+
+    @Transactional
     @Override
     public void updateProduct(Product product) throws ProductUpdateException{
         Long id = product.getId_Product();
@@ -59,6 +61,7 @@ public class ImplServiceProduct implements IServiceProduct {
             throw new ProductUpdateException("Error updating product");
         }
     }
+    @Transactional
     @Override
     public void createProduct(Product product) throws ProductCreationException{
         try {
@@ -110,6 +113,7 @@ public class ImplServiceProduct implements IServiceProduct {
     }
 
     @Override
+    @Transactional
     public void deleteByCategory(Category category) {
         try {
             repositoryProduct.deleteByCategory(category);
@@ -120,6 +124,7 @@ public class ImplServiceProduct implements IServiceProduct {
         }
     }
 
+    @Transactional
     @Override
     public void updateStock(Long id, int stock) {
         try {
