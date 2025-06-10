@@ -37,12 +37,7 @@ public class SecurityManagment {
     }
     @Bean
     public UserDetailsService userDetailsService(DataSource datasource){
-        UserDetails admin = User.withUsername("LuisPiquinRey")
-            .password("{bcrypt}$2a$12$lhKzkztPyneV468Bu5yNJuxK2JDYliQuMex6.EetBHVpb/J.aU3K.")
-            .authorities("ROLE_ADMIN")
-            .build();
         JdbcUserDetailsManager manager = new JdbcUserDetailsManager(datasource);
-        manager.createUser(admin);
         return manager;
     }
 }
