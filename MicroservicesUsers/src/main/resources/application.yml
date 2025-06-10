@@ -1,0 +1,22 @@
+
+spring:
+    application:
+        name: MicroservicesUsers
+    config:
+        import: configserver:http://localhost:8071/
+    output:
+        ansi:
+            enabled: always
+    liquibase:
+        change-log: classpath:db/changelog/db.changelog-master.xml
+    security:
+        user:
+            name: LuisPiquinRey
+            password: LuisPiquinRey
+server:
+    port: 8090
+logging:
+    level:
+        org:
+            springframework:
+                security: ${SPRING_SECURITY_LOG_LEVEL:TRACE}
