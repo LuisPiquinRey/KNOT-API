@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.annotations.ColumnDefault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,7 +30,7 @@ enum Role {
 }
 @Entity
 @Table(name = "User")
-public class User implements UserDetails {
+public class User extends RepresentationModel<User> implements UserDetails {
 
     private static final Logger log = LoggerFactory.getLogger(User.class);
 

@@ -1,5 +1,7 @@
 
 spring:
+    app:
+        jwtSecret: s3cR3tK3y!9x7*Bv@fL1#QzYpRw2T^UcMnXg
     application:
         name: MicroservicesUsers
     config:
