@@ -1,4 +1,3 @@
-
 spring:
     app:
         jwtSecret: s3cR3tK3y!9x7*Bv@fL1#QzYpRw2T^UcMnXg
@@ -11,6 +10,8 @@ spring:
             enabled: always
     liquibase:
         change-log: classpath:db/changelog/db.changelog-master.xml
+        clear-checksums: false
+
     security:
         user:
             name: LuisPiquinRey
@@ -22,3 +23,8 @@ logging:
         org:
             springframework:
                 security: ${SPRING_SECURITY_LOG_LEVEL:TRACE}
+management:
+    endpoints:
+        web:
+            exposure:
+                include: refresh
