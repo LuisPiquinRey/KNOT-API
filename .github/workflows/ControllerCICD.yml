@@ -1,0 +1,36 @@
+name: CI
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'zulu'
+
+      - name: Build with Maven (sin tests)
+        run: mvn clean install -DskipTests
+        working-directory: ./KnotCommerce
+
+      - name: Mostrar contenido
+        run: |
+          echo "El repositorio ${{ github.repository }} contiene los siguientes archivos:"
+          ls -la
+        working-directory: ./KnotCommerce
+
+      - name: Subir artefacto
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-app
+          path: KnotCommerce/target/*.jar

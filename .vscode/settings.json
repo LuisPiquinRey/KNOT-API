@@ -1,0 +1,21 @@
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.debug.settings.onBuildFailureProceed": true,
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "database": "knotcommerce",
+            "username": "root",
+            "name": "AlfaConnection",
+            "askForPassword": true
+        }
+    ]
+}

@@ -1,0 +1,34 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-KnotCommerceApplication<KnotCommerce>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.luispiquinrey.KnotCommerce.KnotCommerceApplication",
+            "projectName": "KnotCommerce",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-CentralizedServerMicroservicesApplication<centralizedServerMicroservices>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.luispiquinrey.centralizedServerMicroservices.CentralizedServerMicroservicesApplication",
+            "projectName": "centralizedServerMicroservices",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MicroservicesUserApplication<MicroservicesUser>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.luispiquinrey.MicroservicesUser.MicroservicesUserApplication",
+            "projectName": "MicroservicesUser",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

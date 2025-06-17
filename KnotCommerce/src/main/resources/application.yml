@@ -1,0 +1,47 @@
+spring:
+    application:
+        name: KnotCommerce
+    cloud:
+        config:
+            enabled: true
+    liquibase:
+        change-log: classpath:db/changelog/db.changelog-master.xml
+    output:
+        ansi:
+            enabled: ALWAYS
+    messages:
+        basename: ValidationMessages
+    batch:
+        jdbc:
+            initialize-schema: never
+        job:
+            enabled: true
+    config:
+        import: configserver:http://localhost:8071/
+    jpa:
+        hibernate:
+            ddl-auto: none
+server:
+    port: 8080
+    servlet:
+        context-path: /api
+    shutdown: immediate
+jasypt:
+    encryptor:
+        password: LuisPiquinRey
+        algorithm: PBEWithMD5AndDES
+logging:
+    level:
+        "[org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory]": ERROR
+    charset:
+        console: UTF-8
+    pattern:
+        console: "
+%clr(%d{yy-MM-dd E HH:mm:ss.SSS}){red}  \
+%clr(%-5level){yellow}  \
+%clr(${PID}){green}  \
+%clr(---){cyan}  \
+%clr([%thread]){blue}  \
+%clr(%-40.40logger{0}){magenta}  \
+%clr(:){faint}  \
+%clr(%msg){white}%n%wex"
