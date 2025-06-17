@@ -1,0 +1,5 @@
+spring:
+    application:
+        name: graph-migrator-service
+server:
+    port: 8050
