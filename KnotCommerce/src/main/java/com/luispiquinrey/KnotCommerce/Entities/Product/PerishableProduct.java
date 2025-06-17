@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.redis.core.RedisHash;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.luispiquinrey.KnotCommerce.Entities.Category;

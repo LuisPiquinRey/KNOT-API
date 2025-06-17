@@ -71,7 +71,7 @@ public class RestControllerProduct {
         try {
             iServiceProduct.createProduct(product);
             return ResponseEntity.status(HttpStatus.CREATED)
-                .body("Product created successfully!");
+                .body(product.toString() );
         } catch (ProductCreationException e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

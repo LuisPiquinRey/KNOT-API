@@ -3,6 +3,8 @@ package com.luispiquinrey.KnotCommerce.Entities;
 import java.io.Serializable;
 
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -27,6 +29,7 @@ public class Category implements Serializable {
     @JsonProperty("name")
     @NotBlank(message = "Name cannot be blank")
     @Size(min = 3, max = 50, message = "{category.length.name}")
+    @Indexed
     private String name;
 
     @Column(name = "description")

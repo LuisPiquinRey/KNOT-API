@@ -3,6 +3,9 @@ package com.luispiquinrey.KnotCommerce.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.luispiquinrey.KnotCommerce.Entities.Category;
@@ -11,6 +14,7 @@ import com.luispiquinrey.KnotCommerce.Exceptions.ProductCreationException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductDeleteException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductUpdateException;
 import com.luispiquinrey.KnotCommerce.Repository.RepositoryProduct;
+
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -22,15 +26,15 @@ public class ImplServiceProduct implements IServiceProduct {
 
     @Autowired
     private final RepositoryProduct repositoryProduct;
+    private static final Logger logger = LoggerFactory.getLogger(ImplServiceProduct.class);
 
-    Logger logger = LoggerFactory.getLogger(ImplServiceProduct.class);
-
-    ImplServiceProduct(RepositoryProduct repositoryProduct) {
+    public ImplServiceProduct(RepositoryProduct repositoryProduct) {
         this.repositoryProduct = repositoryProduct;
     }
 
     @Transactional
     @Override
+    @CacheEvict(value = "products", key = "#id_Product")
     public void deleteProductById(Long id_Product) {
         if (repositoryProduct.existsById(id_Product)) {
             repositoryProduct.deleteById(id_Product);
@@ -43,6 +47,7 @@ public class ImplServiceProduct implements IServiceProduct {
 
     @Transactional
     @Override
+    @CachePut(value = "products", key = "#product.id_Product")
     public void updateProduct(Product product) throws ProductUpdateException {
         Long id = product.getId_Product();
         if (repositoryProduct.existsById(id)) {
@@ -56,6 +61,7 @@ public class ImplServiceProduct implements IServiceProduct {
 
     @Transactional
     @Override
+    @CachePut(value = "products", key = "#product.id_Product")
     public void createProduct(Product product) throws ProductCreationException {
         try {
             repositoryProduct.save(product);
@@ -104,6 +110,7 @@ public class ImplServiceProduct implements IServiceProduct {
 
     @Transactional
     @Override
+    @CacheEvict(value = "products", allEntries = true)
     public void deleteByCategory(Category category) {
         try {
             repositoryProduct.deleteByCategory(category);
@@ -115,6 +122,7 @@ public class ImplServiceProduct implements IServiceProduct {
 
     @Transactional
     @Override
+    @CacheEvict(value = "products", key = "#id")
     public void updateStock(Long id, int stock) {
         try {
             repositoryProduct.updateStock(id, stock);
@@ -125,18 +133,18 @@ public class ImplServiceProduct implements IServiceProduct {
     }
 
     @Override
+    @Cacheable(value = "products", key = "#id_Product")
     public Product getProductOrThrow(Long id_Product) throws EntityNotFoundException {
         return repositoryProduct.findById(id_Product)
             .map(product -> {
-                logger.info("\u001B[32m🔍 [PRODUCT FOUND] ➤ Product with ID {} retrieved successfully.\u001B[0m", id_Product);
+                logger.info("\u001B[32m🔍 [PRODUCT FOUND - DB] ➤ Product with ID {} retrieved successfully.\u001B[0m", id_Product);
                 return product;
             })
             .orElseThrow(() -> {
-                logger.warn("\u001B[33m❌ [NOT FOUND] ➤ Product with ID {} was not found in the database.\u001B[0m", id_Product);
+                logger.warn("\u001B[33m❌ [NOT FOUND] ➤ Product with ID {} was not found.\u001B[0m", id_Product);
                 return new EntityNotFoundException("Product with ID " + id_Product + " not found.");
             });
     }
-
 
     @Override
     public List<Product> findAllProducts() {
@@ -150,4 +158,3 @@ public class ImplServiceProduct implements IServiceProduct {
         }
     }
 }
-
