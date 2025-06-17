@@ -19,9 +19,9 @@ public class ImplServiceCategory implements ICategoryService {
 
     private static final Logger logger = LoggerFactory.getLogger(ImplServiceCategory.class);
 
+    @Autowired
     private final RepositoryCategory repositoryCategory;
 
-    @Autowired
     public ImplServiceCategory(RepositoryCategory repositoryCategory) {
         this.repositoryCategory = repositoryCategory;
     }

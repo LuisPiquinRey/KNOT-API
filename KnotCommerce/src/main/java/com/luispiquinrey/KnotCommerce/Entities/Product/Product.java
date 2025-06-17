@@ -130,6 +130,11 @@ public abstract class Product implements Serializable{
     @Min(value = 0, message = "{product.min.stock}")
     private Integer stock;
 
+    @Column(name="code_user")
+    @JsonProperty("code_user")
+    @Positive
+    private Long code_User;
+
     @Version
     @Column(name="version")
     @JsonIgnore
@@ -167,6 +172,23 @@ public abstract class Product implements Serializable{
             @Length(min = 5, max = 20, message = "{product.length.name}") String name,
             @Positive(message = "{product.positive.price}") double price,
             @Length(min = 5, max = 100, message = "{product.length.description}") String description,
+            @Min(value = 0, message = "{product.min.stock}") Integer stock, @Positive Long code_User, Integer version,
+            List<Category> categories) {
+        this.available = available;
+        this.id_Product = id_Product;
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.stock = stock;
+        this.code_User = code_User;
+        this.version = version;
+        this.categories = categories;
+    }
+
+    public Product(boolean available, Long id_Product,
+            @Length(min = 5, max = 20, message = "{product.length.name}") String name,
+            @Positive(message = "{product.positive.price}") double price,
+            @Length(min = 5, max = 100, message = "{product.length.description}") String description,
             @Min(value = 0, message = "{product.min.stock}") Integer stock, Integer version,
             List<Category> categories) {
         this.available = available;
@@ -177,6 +199,26 @@ public abstract class Product implements Serializable{
         this.stock = stock;
         this.version = version;
         this.categories = categories;
+    }
+
+    public Product(@Length(min = 5, max = 20, message = "{product.length.name}") String name,
+            @Positive(message = "{product.positive.price}") double price,
+            @Length(min = 5, max = 100, message = "{product.length.description}") String description,
+            @Min(value = 0, message = "{product.min.stock}") Integer stock, @Positive Long code_User) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.stock = stock;
+        this.code_User = code_User;
+    }
+
+    public Product(@Length(min = 5, max = 20, message = "{product.length.name}") String name,
+            @Positive(message = "{product.positive.price}") double price,
+            @Min(value = 0, message = "{product.min.stock}") Integer stock, @Positive Long code_User) {
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+        this.code_User = code_User;
     }
 
     public Product(@Length(min = 5, max = 20, message = "{product.length.name}") String name,
@@ -242,6 +284,14 @@ public abstract class Product implements Serializable{
     public void setVersion(Integer version) {
         this.version = version;
     }
+    public Long getCode_User() {
+        return code_User;
+    }
+
+    public void setCode_User(Long code_User) {
+        this.code_User = code_User;
+    }
+
     public String productToJson() throws JsonProcessingException{
         ObjectMapper mapper=new ObjectMapper();
         ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();

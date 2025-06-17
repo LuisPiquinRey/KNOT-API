@@ -7,4 +7,7 @@
     <changeSet id="1" author="LuisPiquinRey">
         <sqlFile path="db/migration/V1__create_tables.sql" relativeToChangelogFile="false" />
     </changeSet>
+    <changeSet id="2" author="LuisPiquinRey">
+        <sqlFile path="db/migration/V2__add_code_user.sql" relativeToChangelogFile="false" />
+    </changeSet>
 </databaseChangeLog>
