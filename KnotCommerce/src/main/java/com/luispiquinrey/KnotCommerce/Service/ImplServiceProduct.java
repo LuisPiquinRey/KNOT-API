@@ -47,11 +47,6 @@ public class ImplServiceProduct implements IServiceProduct {
     @Override
     public void updateProduct(Product product) throws ProductUpdateException{
         Long id = product.getId_Product();
-        if (id == null) {
-            logger.warn("❌ Cannot update: Product ID is null.");
-            System.out.println("\u001B[31m❌ Cannot update: Product ID is null. 🕵️‍♂️\u001B[0m");
-            return;
-        }
         if (repositoryProduct.existsById(id)) {
             repositoryProduct.save(product);
             System.out.println("\u001B[32m✅ Product updated successfully! 🛠️\u001B[0m");
