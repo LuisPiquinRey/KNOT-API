@@ -1,5 +1,7 @@
 package com.luispiquinrey.KnotCommerce.Controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,6 +39,8 @@ import jakarta.validation.Valid;
 @RestController
 public class RestControllerProduct {
 
+    private static final Logger logger = LoggerFactory.getLogger(RestControllerProduct.class);
+
     @Autowired
     private final IServiceProduct iServiceProduct;
 
@@ -69,6 +73,7 @@ public class RestControllerProduct {
             return ResponseEntity.status(HttpStatus.CREATED)
                 .body("Product created successfully!");
         } catch (ProductCreationException e) {
+            logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
         }
@@ -97,6 +102,7 @@ public class RestControllerProduct {
             return ResponseEntity.status(HttpStatus.OK)
                 .body("Product with the id: " + id + " correctly deleted");
         }catch(ProductDeleteException e){
+            logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
         }
@@ -122,6 +128,7 @@ public class RestControllerProduct {
             return ResponseEntity.status(HttpStatus.OK)
                 .body("Product with id: " + product.getId_Product() + " correctly updated");
         }catch(ProductUpdateException e){
+            logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
         }
@@ -150,6 +157,7 @@ public class RestControllerProduct {
             return ResponseEntity.status(HttpStatus.OK)
                 .body(product.productToJson());
         }catch(EntityNotFoundException | JsonProcessingException e){
+            logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
         }
@@ -169,6 +177,7 @@ public class RestControllerProduct {
         try {
             return ResponseEntity.ok(iServiceProduct.findAvailableProducts());
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error retrieving available products: " + e.getMessage());
         }
@@ -195,6 +204,7 @@ public class RestControllerProduct {
         try {
             return ResponseEntity.ok(iServiceProduct.findByCategoryName(categoryName));
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error retrieving products by category: " + e.getMessage());
         }
@@ -226,6 +236,7 @@ public class RestControllerProduct {
         try {
             return ResponseEntity.ok(iServiceProduct.findByPriceRange(minPrice, maxPrice));
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error retrieving products by price range: " + e.getMessage());
         }
@@ -250,6 +261,7 @@ public class RestControllerProduct {
             iServiceProduct.deleteByCategory(category);
             return ResponseEntity.ok("Products in category '" + category.getName() + "' deleted successfully!");
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
         }
@@ -280,6 +292,7 @@ public class RestControllerProduct {
             iServiceProduct.updateStock(id, stock);
             return ResponseEntity.ok("Stock updated for product with id: " + id);
         } catch (ProductUpdateException e) {
+            logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
         }
@@ -299,6 +312,7 @@ public class RestControllerProduct {
         try {
             return ResponseEntity.ok(iServiceProduct.findAllProducts());
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error retrieving all products: " + e.getMessage());
         }
