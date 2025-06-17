@@ -13,8 +13,4 @@ public class ListenerRabbit{
     public void receive(@Payload String message){
         System.out.println("Hola: " + message);
     }
-    @Bean
-    public Queue queue() {
-        return new Queue("Neo4jQueue", false);
-    }
 }
