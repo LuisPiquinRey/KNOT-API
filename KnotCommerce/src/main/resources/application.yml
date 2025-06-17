@@ -1,6 +1,13 @@
 spring:
     application:
         name: KnotCommerce
+    rabbitmq:
+        listener:
+            simple:
+                retry:
+                    enabled: true
+                    max-attempts: 3
+                    initial-interval: 1000
     cloud:
         config:
             enabled: true
@@ -13,7 +20,7 @@ spring:
         basename: ValidationMessages
     batch:
         jdbc:
-            initialize-schema: never
+            initialize-schema: always
         job:
             enabled: true
     config:

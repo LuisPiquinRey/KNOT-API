@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
@@ -112,6 +113,7 @@ public class CSVProduct {
     ) {
         return new StepBuilder("sampleStepNoPerishable", jobRepository)
             .<NoPerishableProduct, NoPerishableProduct>chunk(10, transactionManager)
+            .allowStartIfComplete(true)
             .reader(noPerishableProductReader)
             .writer(writer)
             .listener(new LoggingStepExecutionListener())
@@ -140,6 +142,8 @@ public class CSVProduct {
     @Bean
     public Job sampleJob(JobRepository jobRepository, Step sampleStepNoPerishable,Step sampleStepPerishable,Step deleteCsvStep) {
         return new JobBuilder("sampleJob", jobRepository)
+                .preventRestart()
+                .incrementer(new RunIdIncrementer())
                 .start(sampleStepNoPerishable)
                 .next(sampleStepPerishable)
                 .next(deleteCsvStep)

@@ -14,6 +14,6 @@ public class RabbitMQPublisher {
 
     public void sendMessage(String message, MessageProperties headers) {
         Message amqpMessage = new Message(message.getBytes(), headers);
-        rabbitTemplate.send("Neo4jExchange", "routing-neo4j", amqpMessage);
+        rabbitTemplate.send("Neo4jExchange","Neo4jQueue", amqpMessage);
     }
 }
