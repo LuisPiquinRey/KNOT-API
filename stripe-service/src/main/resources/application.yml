@@ -1,0 +1,13 @@
+spring:
+    application:
+        name: stripe-service
+        rabbitmq:
+        listener:
+            simple:
+                auto-startup: true
+                retry:
+                    enabled: true
+                    max-attempts: 3
+                    initial-interval: 3000
+server:
+    port: 8060
