@@ -21,4 +21,5 @@ public interface IServiceProduct {
     void deleteByCategory(Category category);
     void updateStock(Long id, int stock);
     List<Product> findAllProducts();
+    boolean existsById(Long id_Product);
 }

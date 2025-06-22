@@ -65,10 +65,13 @@ public class RabbitMQConfiguration {
 
     @Bean
     public CachingConnectionFactory connectionFactory() {
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory("localhost");
-        connectionFactory.setPublisherConfirmType(CachingConnectionFactory.ConfirmType.CORRELATED);
-        connectionFactory.setPublisherReturns(true);
-        connectionFactory.addConnectionListener(new ConnectionListener() {
+        CachingConnectionFactory factory = new CachingConnectionFactory("localhost");
+        factory.setUsername("LuisPiquinRey");
+        factory.setPassword("Slayer.khamra04killer");
+        factory.setVirtualHost("/");
+        factory.setPublisherConfirmType(CachingConnectionFactory.ConfirmType.CORRELATED);
+        factory.setPublisherReturns(true);
+        factory.addConnectionListener(new ConnectionListener() {
             @Override
             public void onCreate(Connection connection) {
                 logger.info("🚀 RabbitMQ connection established: " + connection);
@@ -84,6 +87,6 @@ public class RabbitMQConfiguration {
                 logger.error("💥 RabbitMQ shutdown signal received: " + signal.getMessage());
             }
         });
-        return connectionFactory;
+        return factory;
     }
 }

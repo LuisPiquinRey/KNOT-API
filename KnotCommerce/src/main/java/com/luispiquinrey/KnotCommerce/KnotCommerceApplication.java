@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
@@ -27,6 +28,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 @EnableScheduling
 @EnableAsync
 @EnableCaching
+@EnableRabbit
 @OpenAPIDefinition(
 	info=@Info(
 		title="Product microservice REST API Documentation",

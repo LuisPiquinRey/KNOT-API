@@ -157,4 +157,16 @@ public class ImplServiceProduct implements IServiceProduct {
             return List.of();
         }
     }
+
+    @Override
+    public boolean existsById(Long id_Product) {
+        try {
+            boolean exists = repositoryProduct.existsById(id_Product);
+            logger.info("\u001B[34m🔍 [EXISTS CHECK] ➤ Product with ID {} existence: {}.\u001B[0m", id_Product, exists);
+            return exists;
+        } catch (Exception e) {
+            logger.error("\u001B[31m🚨 [EXISTS CHECK FAILED] ➤ Could not check existence for product ID {}.\u001B[0m", id_Product, e);
+            return false;
+        }
+    }
 }

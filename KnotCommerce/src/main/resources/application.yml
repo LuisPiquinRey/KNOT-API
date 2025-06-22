@@ -8,6 +8,16 @@ spring:
                     enabled: true
                     max-attempts: 3
                     initial-interval: 1000
+        host: localhost
+        port: 5672
+        username: LuisPiquinRey
+        password: Slayer.khamra04killer
+        virtual-host: /
+    neo4j:
+        uri: neo4j+s://597fd0f7.databases.neo4j.io
+        authentication:
+            password: g5NQX9qcDn2MLj9QrrxYmwDcaNPEDxeX7TV-esvfHgI
+            username: neo4j
     cloud:
         config:
             enabled: true
@@ -21,6 +31,7 @@ spring:
     batch:
         jdbc:
             initialize-schema: always
+            isolation-level-for-create: DEFAULT
         job:
             enabled: true
     config:
@@ -32,20 +43,17 @@ spring:
         redis:
             host: localhost
             port:  6379
-        cache:
+    cache:
             type: redis
 server:
     port: 8080
     servlet:
         context-path: /api
     shutdown: immediate
-jasypt:
-    encryptor:
-        password: LuisPiquinRey
-        algorithm: PBEWithMD5AndDES
 logging:
     level:
-        "[org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory]": ERROR
+        "[org.springframework.amqp]": DEBUG
+        "[org.springframework.amqp.rabbit.core.RabbitAdmin]": DEBUG
     charset:
         console: UTF-8
     pattern:

@@ -1,7 +1,5 @@
 package com.luispiquinrey.KnotCommerce.DTOs;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class ProductPaymentDTO {
 
     private Long id_Product;

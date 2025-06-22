@@ -1,10 +1,12 @@
 package com.luispiquinrey.KnotCommerce.Controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,18 +15,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.luispiquinrey.KnotCommerce.Configuration.RabbitAMQP.RabbitMQPublisher;
+import com.luispiquinrey.KnotCommerce.DTOs.CategoryNode;
+import com.luispiquinrey.KnotCommerce.DTOs.MapperDTOs.MapperProductAndPayment;
+import com.luispiquinrey.KnotCommerce.DTOs.ProductNode;
 import com.luispiquinrey.KnotCommerce.Entities.Category;
 import com.luispiquinrey.KnotCommerce.Entities.Product.Product;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductCreationException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductDeleteException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductUpdateException;
-import com.luispiquinrey.KnotCommerce.Service.IServiceProduct;
+import com.luispiquinrey.KnotCommerce.Service.ImplServiceProduct;
+import com.luispiquinrey.KnotCommerce.Service.ImplServiceProductNode;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,6 +37,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+
 
 @Tag(
     name = "CRUD Repsitory for Products",
@@ -43,15 +49,61 @@ public class RestControllerProduct {
     private static final Logger logger = LoggerFactory.getLogger(RestControllerProduct.class);
 
     @Autowired
-    private final IServiceProduct iServiceProduct;
+    private final ImplServiceProduct implServiceProduct;
 
     @Autowired
     private final RabbitMQPublisher rabbitMQPublisher;
 
-    public RestControllerProduct(IServiceProduct iServiceProduct,RabbitMQPublisher rabbitMQPublisher){
-        this.iServiceProduct = iServiceProduct;
+    @Autowired
+    private final MapperProductAndPayment mapperProductAndPayment;
+
+    @Autowired
+    private final ImplServiceProductNode implServiceProductNode;
+
+    public RestControllerProduct(ImplServiceProduct implServiceProduct,RabbitMQPublisher rabbitMQPublisher,
+        MapperProductAndPayment mapperProductAndPayment,ImplServiceProductNode implServiceProductNode){
+        this.implServiceProduct = implServiceProduct;
         this.rabbitMQPublisher=rabbitMQPublisher;
+        this.mapperProductAndPayment=mapperProductAndPayment;
+        this.implServiceProductNode=implServiceProductNode;
     }
+
+    @PostMapping("/buyProduct/{id}")
+    public ResponseEntity<?> buyProduct(@PathVariable Long id) {
+        try {
+            if (!implServiceProduct.existsById(id)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Product with id " + id + " not found.");
+            }
+            Product product = implServiceProduct.getProductOrThrow(id);
+
+
+            if (product.getStock() == null || product.getStock() <= 0) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Product with id " + id + " is out of stock.");
+            }
+
+            product.setStock(product.getStock() - 1);
+
+            implServiceProduct.updateProduct(product);
+
+            return ResponseEntity.ok("Product with id " + id + " purchased successfully. Remaining stock: " + product.getStock());
+
+        } catch (EntityNotFoundException e) {
+            logger.error("Product not found: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Product not found: " + e.getMessage());
+        } catch (ProductUpdateException e) {
+            logger.error("Error updating product stock: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error updating product stock: " + e.getMessage());
+        } catch (Exception e) {
+            logger.error("Unexpected error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Unexpected error occurred: " + e.getMessage());
+        }
+}
+
 
     @Operation(
         summary = "Create products",
@@ -74,10 +126,19 @@ public class RestControllerProduct {
             return ResponseEntity.badRequest().body(sb.toString().trim());
         }
         try {
-            iServiceProduct.createProduct(product);
+            implServiceProduct.createProduct(product);
 
-            rabbitMQPublisher.sendMessageStripe(product.productToJson());
+            List<CategoryNode> categoryNodes=null;
+            if (product.getCategories() != null) {
+                categoryNodes = product.getCategories().stream()
+                    .map(cat -> new CategoryNode(cat.getId_Category(), cat.getName(), null))
+                    .collect(Collectors.toList());
+            }
 
+            ProductNode productNode = new ProductNode(product.getId_Product(), categoryNodes);
+            implServiceProductNode.save(productNode);
+
+            rabbitMQPublisher.sendMessageStripe(mapperProductAndPayment.toPaymentDTO(product));
 
             return ResponseEntity.status(HttpStatus.CREATED)
                 .body(product.toString() );
@@ -107,7 +168,7 @@ public class RestControllerProduct {
     @DeleteMapping("/deleteProduct/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id){
         try{
-            iServiceProduct.deleteProductById(id);
+            implServiceProduct.deleteProductById(id);
             return ResponseEntity.status(HttpStatus.OK)
                 .body("Product with the id: " + id + " correctly deleted");
         }catch(ProductDeleteException e){
@@ -133,7 +194,7 @@ public class RestControllerProduct {
     @PutMapping("/updateProduct")
     public ResponseEntity<?> updateProduct(@RequestBody Product product){
         try{
-            iServiceProduct.updateProduct(product);
+            implServiceProduct.updateProduct(product);
             return ResponseEntity.status(HttpStatus.OK)
                 .body("Product with id: " + product.getId_Product() + " correctly updated");
         }catch(ProductUpdateException e){
@@ -162,7 +223,7 @@ public class RestControllerProduct {
     @GetMapping("/getProductById/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Long id){
         try{
-            Product product = iServiceProduct.getProductOrThrow(id);
+            Product product = implServiceProduct.getProductOrThrow(id);
             return ResponseEntity.status(HttpStatus.OK)
                 .body(product.productToJson());
         }catch(EntityNotFoundException | JsonProcessingException e){
@@ -184,7 +245,7 @@ public class RestControllerProduct {
     @GetMapping("/availableProducts")
     public ResponseEntity<?> getAvailableProducts() {
         try {
-            return ResponseEntity.ok(iServiceProduct.findAvailableProducts());
+            return ResponseEntity.ok(implServiceProduct.findAvailableProducts());
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -211,7 +272,7 @@ public class RestControllerProduct {
     @GetMapping("/productsByCategory/{categoryName}")
     public ResponseEntity<?> getProductsByCategory(@PathVariable String categoryName) {
         try {
-            return ResponseEntity.ok(iServiceProduct.findByCategoryName(categoryName));
+            return ResponseEntity.ok(implServiceProduct.findByCategoryName(categoryName));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -243,7 +304,7 @@ public class RestControllerProduct {
             @RequestParam double minPrice,
             @RequestParam double maxPrice) {
         try {
-            return ResponseEntity.ok(iServiceProduct.findByPriceRange(minPrice, maxPrice));
+            return ResponseEntity.ok(implServiceProduct.findByPriceRange(minPrice, maxPrice));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -267,7 +328,7 @@ public class RestControllerProduct {
     @DeleteMapping("/deleteByCategory")
     public ResponseEntity<?> deleteByCategory(@RequestBody Category category) {
         try {
-            iServiceProduct.deleteByCategory(category);
+            implServiceProduct.deleteByCategory(category);
             return ResponseEntity.ok("Products in category '" + category.getName() + "' deleted successfully!");
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -298,7 +359,7 @@ public class RestControllerProduct {
     @PutMapping("/updateStock/{id}")
     public ResponseEntity<?> updateStock(@PathVariable Long id, @RequestParam int stock) {
         try {
-            iServiceProduct.updateStock(id, stock);
+            implServiceProduct.updateStock(id, stock);
             return ResponseEntity.ok("Stock updated for product with id: " + id);
         } catch (ProductUpdateException e) {
             logger.error(e.getMessage());
@@ -319,7 +380,7 @@ public class RestControllerProduct {
     @GetMapping("/findAllProducts")
     public ResponseEntity<?> getAllProducts() {
         try {
-            return ResponseEntity.ok(iServiceProduct.findAllProducts());
+            return ResponseEntity.ok(implServiceProduct.findAllProducts());
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
