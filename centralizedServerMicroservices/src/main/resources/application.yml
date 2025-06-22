@@ -12,7 +12,7 @@ spring:
                 git:
                     uri: "https://github.com/LuisPiquinRey/centralizedServerMicroservices.git"
                     username: LuisPiquinRey
-                    password: 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
+                    password: ${GIT_PASSWORD}
                     default-label: main
                     timeout:  5
                     clone-on-start: true
