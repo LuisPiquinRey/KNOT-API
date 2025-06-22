@@ -1,8 +1,6 @@
 package com.luispiquinrey.graph_migrator_service.RabbitAMQP;
 
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 

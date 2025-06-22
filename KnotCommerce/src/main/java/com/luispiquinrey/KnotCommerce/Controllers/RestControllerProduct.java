@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.luispiquinrey.KnotCommerce.Configuration.RabbitAMQP.RabbitMQPublisher;
 import com.luispiquinrey.KnotCommerce.Entities.Category;
 import com.luispiquinrey.KnotCommerce.Entities.Product.Product;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductCreationException;
@@ -44,8 +45,12 @@ public class RestControllerProduct {
     @Autowired
     private final IServiceProduct iServiceProduct;
 
-    public RestControllerProduct(IServiceProduct iServiceProduct){
+    @Autowired
+    private final RabbitMQPublisher rabbitMQPublisher;
+
+    public RestControllerProduct(IServiceProduct iServiceProduct,RabbitMQPublisher rabbitMQPublisher){
         this.iServiceProduct = iServiceProduct;
+        this.rabbitMQPublisher=rabbitMQPublisher;
     }
 
     @Operation(
@@ -70,6 +75,10 @@ public class RestControllerProduct {
         }
         try {
             iServiceProduct.createProduct(product);
+
+            rabbitMQPublisher.sendMessageStripe(product.productToJson());
+
+
             return ResponseEntity.status(HttpStatus.CREATED)
                 .body(product.toString() );
         } catch (ProductCreationException e) {

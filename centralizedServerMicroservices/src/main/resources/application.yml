@@ -12,11 +12,19 @@ spring:
                 git:
                     uri: "https://github.com/LuisPiquinRey/centralizedServerMicroservices.git"
                     username: LuisPiquinRey
-                    password: ${SPRING_SECURITY_PASSWORD}
+                    password: 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
                     default-label: main
                     timeout:  5
                     clone-on-start: true
                     force-pull: true
+eureka:
+    instance:
+        preferIpAddress: true
+    client:
+        registerWithEureka: true
+        fetchRegistry: true
+        serviceUrl:
+            defaultZone: "http://localhost:8761/eureka/"
 logging:
     charset:
         console: UTF-8

@@ -8,7 +8,8 @@
             "mainClass": "com.luispiquinrey.KnotCommerce.KnotCommerceApplication",
             "projectName": "KnotCommerce",
             "args": "",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=61853 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=KnotCommerce"
         },
         {
             "type": "java",
@@ -18,7 +19,8 @@
             "mainClass": "com.luispiquinrey.centralizedServerMicroservices.CentralizedServerMicroservicesApplication",
             "projectName": "centralizedServerMicroservices",
             "args": "",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=61794 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=centralizedServerMicroservices"
         },
         {
             "type": "java",
@@ -27,6 +29,48 @@
             "cwd": "${workspaceFolder}",
             "mainClass": "com.luispiquinrey.MicroservicesUser.MicroservicesUserApplication",
             "projectName": "MicroservicesUser",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-EurekaServerApplication<eurekaServer>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.luispiquinrey.eurekaServer.EurekaServerApplication",
+            "projectName": "eurekaServer",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=61765 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=eurekaServer"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-GraphMigratorServiceApplication<graph-migrator-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.luispiquinrey.graph_migrator_service.GraphMigratorServiceApplication",
+            "projectName": "graph-migrator-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=61829 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=graph-migrator-service"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MicroservicesUsersApplication<MicroservicesUsers>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.luispiquinrey.MicroservicesUsers.MicroservicesUsersApplication",
+            "projectName": "MicroservicesUsers",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-StripeServiceApplication<stripe-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.luispiquinrey.stripe_service.StripeServiceApplication",
+            "projectName": "stripe-service",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }

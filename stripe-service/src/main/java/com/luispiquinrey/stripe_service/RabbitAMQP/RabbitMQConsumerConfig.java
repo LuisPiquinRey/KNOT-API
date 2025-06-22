@@ -1,5 +1,6 @@
 package com.luispiquinrey.stripe_service.RabbitAMQP;
 
+import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -19,15 +20,16 @@ public class RabbitMQConsumerConfig {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setMissingQueuesFatal(false);
+        factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         factory.setFailedDeclarationRetryInterval(5000L);
         return factory;
     }
-        @Bean
+    @Bean
     public Queue queue(){
         return QueueBuilder.durable("StripeQueue").build();
     }
     @Bean
-    public Exchange exchange(){
+    public DirectExchange exchange(){
         return new DirectExchange("ExchangeKNOT");
     }
     @Bean

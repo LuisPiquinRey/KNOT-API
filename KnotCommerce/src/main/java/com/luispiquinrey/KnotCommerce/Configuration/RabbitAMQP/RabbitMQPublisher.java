@@ -12,8 +12,12 @@ public class RabbitMQPublisher {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    public void sendMessage(String message, MessageProperties headers) {
+    public void sendMessageNeo4j(String message, MessageProperties headers) {
         Message amqpMessage = new Message(message.getBytes(), headers);
-        rabbitTemplate.send("Neo4jExchange","Neo4jQueue", amqpMessage);
+        rabbitTemplate.send("ExchangeKNOT","Neo4jQueue", amqpMessage);
+    }
+    public void sendMessageStripe(String message){
+        Message amqpMessage=new Message(message.getBytes());
+        rabbitTemplate.send("ExchangeKNOT","StripeQueue",amqpMessage);
     }
 }

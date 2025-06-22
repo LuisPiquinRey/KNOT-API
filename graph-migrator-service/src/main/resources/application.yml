@@ -4,10 +4,13 @@ spring:
     rabbitmq:
         listener:
             simple:
-                auto-startup: true
                 retry:
                     enabled: true
                     max-attempts: 3
                     initial-interval: 3000
+        host: localhost
+        port: 5672
+        username: LuisPiquinRey
+        password: Slayer.khamra04/killer
 server:
     port: 8050

@@ -25,13 +25,13 @@ public class RabbitMQConsumerConfig {
         factory.setFailedDeclarationRetryInterval(5000L);
         return factory;
     }
-        @Bean
+    @Bean
     public Queue queue(){
         return QueueBuilder.durable("Neo4jQueue").build();
     }
     @Bean
     public Exchange exchange(){
-        return new DirectExchange("Neo4jExchange");
+        return new DirectExchange("ExchangeKNOT");
     }
     @Bean
     public Binding binding(Queue queue, Exchange exchange){
