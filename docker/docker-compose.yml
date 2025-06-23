@@ -1,14 +1,16 @@
-
 services:
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:3.11-management
     container_name: amqp
     ports:
       - "5672:5672"
       - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: LuisPiquinRey
-      RABBITMQ_DEFAULT_PASS: "Slayer.khamra04/killer"
+      RABBITMQ_DEFAULT_PASS: Slayer.khamra04killer
+      RABBITMQ_DEFAULT_VHOST: /
+    restart: always
+
   redis:
     image: redis:7.2
     container_name: redis-cache

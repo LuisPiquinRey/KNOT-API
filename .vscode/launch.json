@@ -9,6 +9,7 @@
             "projectName": "KnotCommerce",
             "args": "",
             "envFile": "${workspaceFolder}/.env",
+            "encoding": "utf8",
             "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=61853 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=KnotCommerce"
         },
         {
@@ -20,7 +21,10 @@
             "projectName": "centralizedServerMicroservices",
             "args": "",
             "envFile": "${workspaceFolder}/.env",
-            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=61794 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=centralizedServerMicroservices"
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=61794 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=centralizedServerMicroservices",
+            "env": {
+                "GIT_PASSWORD": "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"
+            }
         },
         {
             "type": "java",
@@ -72,7 +76,10 @@
             "mainClass": "com.luispiquinrey.stripe_service.StripeServiceApplication",
             "projectName": "stripe-service",
             "args": "",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "env": {
+                "STRIPE_API_KEY": "sk_test_51RWKOKCD4bmQ0obiUv2VzN3T3ebV6GDNhHYqhqQro03aG1yaola30AWAN0zIqXrm7h8QIUDmNZoogNHNviYYKqWn00hnAy3juz"
+            }
         }
     ]
 }

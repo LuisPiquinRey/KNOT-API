@@ -136,8 +136,6 @@ public class RestControllerProduct {
             }
 
             ProductNode productNode = new ProductNode(product.getId_Product(), categoryNodes);
-            implServiceProductNode.save(productNode);
-
             rabbitMQPublisher.sendMessageStripe(mapperProductAndPayment.toPaymentDTO(product));
 
             return ResponseEntity.status(HttpStatus.CREATED)

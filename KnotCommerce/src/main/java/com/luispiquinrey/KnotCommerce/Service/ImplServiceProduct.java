@@ -14,7 +14,7 @@ import com.luispiquinrey.KnotCommerce.Exceptions.ProductCreationException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductDeleteException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductUpdateException;
 import com.luispiquinrey.KnotCommerce.Repository.RepositoryProduct;
-
+import com.luispiquinrey.KnotCommerce.Service.Interface.IServiceProduct;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;

@@ -2,7 +2,8 @@ package com.luispiquinrey.KnotCommerce.Controllers;
 
 import com.luispiquinrey.KnotCommerce.Entities.Category;
 import com.luispiquinrey.KnotCommerce.Entities.Product.Product;
-import com.luispiquinrey.KnotCommerce.Service.IServiceProduct;
+import com.luispiquinrey.KnotCommerce.Service.Interface.IServiceProduct;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

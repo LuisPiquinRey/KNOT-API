@@ -11,11 +11,12 @@ import com.luispiquinrey.KnotCommerce.Exceptions.CategoryCreationException;
 import com.luispiquinrey.KnotCommerce.Exceptions.CategoryDeleteException;
 import com.luispiquinrey.KnotCommerce.Exceptions.CategoryUpdateException;
 import com.luispiquinrey.KnotCommerce.Repository.RepositoryCategory;
+import com.luispiquinrey.KnotCommerce.Service.Interface.IServiceCategory;
 
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
-public class ImplServiceCategory implements ICategoryService {
+public class ImplServiceCategory implements IServiceCategory {
 
     private static final Logger logger = LoggerFactory.getLogger(ImplServiceCategory.class);
 

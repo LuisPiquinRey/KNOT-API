@@ -33,10 +33,10 @@ public class RabbitMQConsumerConfig {
         return new DirectExchange("ExchangeKNOT");
     }
     @Bean
-    public Binding binding(Queue queue, Exchange exchange){
+    public Binding binding(Queue queue, DirectExchange exchange){
         return BindingBuilder.bind(queue)
             .to(exchange)
-            .with("routing-stripe")
-            .noargs();
+            .with("routing-stripe");
     }
+
 }
