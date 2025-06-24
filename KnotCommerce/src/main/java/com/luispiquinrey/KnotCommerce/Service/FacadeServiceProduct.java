@@ -1,14 +1,16 @@
 package com.luispiquinrey.KnotCommerce.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.luispiquinrey.KnotCommerce.Entities.Category;
 import com.luispiquinrey.KnotCommerce.Entities.Product.Product;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductDeleteException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductUpdateException;
+import com.luispiquinrey.KnotCommerce.Service.Implementation.ImplServiceProduct;
+import com.luispiquinrey.KnotCommerce.Service.Implementation.ImplServiceProductNode;
 import com.luispiquinrey.KnotCommerce.Service.Interface.IServiceProduct;
 
 import jakarta.persistence.EntityNotFoundException;

@@ -33,24 +33,35 @@ public class ListenerRabbit {
         }
         Stripe.apiKey=apiKey;
         try {
-            ProductCreateParams productParams=
-                ProductCreateParams.builder()
-                    .setName(jsonNode.get("name").asText())
-                    .setDescription(jsonNode.get("description").asText())
-                    .setActive(true)
-                    .setId(jsonNode.get("id_Product").asText())
-                    .build();
-            Product product=Product.create(productParams);
-            logger.info("Success! Here is your starter product id: " + product.getId());
-            PriceCreateParams params=
-                PriceCreateParams.builder()
-                    .setProduct(product.getId())
-                    .setCurrency("usd")
-                    .setUnitAmount(jsonNode.get("price").asLong())
-                    .build();
-            Price price=Price.create(params);
-            logger.info("Success! Here is the id of the price: " + price.getId());
-            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+            switch(jsonNode.get("tactic").asText()){
+                case "CREATE_PRODUCT"->{
+                    ProductCreateParams productParams=
+                    ProductCreateParams.builder()
+                        .setName(jsonNode.get("name").asText())
+                        .setDescription(jsonNode.get("description").asText())
+                        .setActive(true)
+                        .setId(jsonNode.get("id_Product").asText())
+                        .build();
+                    Product product=Product.create(productParams);
+                    logger.info("Success! Here is your starter product id: " + product.getId());
+                    PriceCreateParams params=
+                        PriceCreateParams.builder()
+                            .setProduct(product.getId())
+                            .setCurrency("usd")
+                            .setUnitAmount(jsonNode.get("price").asLong())
+                            .build();
+                    Price price=Price.create(params);
+                    logger.info("Success! Here is the id of the price: " + price.getId());
+                    channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+                    break;
+                }
+                case "DELETE_PRODUCT"->{
+                    Product product = Product.retrieve(jsonNode.get("id_Product").asText());
+                    Product deletedProduct = product.delete();
+                    logger.info("Product deleted: " + deletedProduct.getId());
+                    channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+                }
+            }
         } catch (Exception e) {
             channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, true);
         }

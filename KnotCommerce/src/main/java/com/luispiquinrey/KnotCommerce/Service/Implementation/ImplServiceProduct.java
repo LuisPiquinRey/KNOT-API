@@ -1,4 +1,4 @@
-package com.luispiquinrey.KnotCommerce.Service;
+package com.luispiquinrey.KnotCommerce.Service.Implementation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

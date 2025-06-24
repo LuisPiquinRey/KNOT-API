@@ -178,6 +178,13 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>KnotCenterMaven</id>
+            <url>http://localhost:9090/repository/KnotCenterMaven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <build>
         <plugins>
             <!-- Spring Boot Plugin -->

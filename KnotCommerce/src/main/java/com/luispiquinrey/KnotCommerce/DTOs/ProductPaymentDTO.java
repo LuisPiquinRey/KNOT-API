@@ -1,12 +1,15 @@
 package com.luispiquinrey.KnotCommerce.DTOs;
 
-public class ProductPaymentDTO {
+import com.luispiquinrey.KnotCommerce.Enums.Tactic;
 
+public class ProductPaymentDTO {
+    private Tactic tactic;
     private Long id_Product;
     private String name;
     private double price;
     private String description;
-    public ProductPaymentDTO(Long id_Product, String name, double price, String description) {
+    public ProductPaymentDTO(Tactic tactic,Long id_Product, String name, double price, String description) {
+        this.tactic=tactic;
         this.id_Product = id_Product;
         this.name = name;
         this.price = price;
@@ -35,5 +38,11 @@ public class ProductPaymentDTO {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+    public Tactic getTactic() {
+        return tactic;
+    }
+    public void setTactic(Tactic tactic) {
+        this.tactic = tactic;
     }
 }

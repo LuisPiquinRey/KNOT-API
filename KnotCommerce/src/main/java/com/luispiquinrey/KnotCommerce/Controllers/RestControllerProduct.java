@@ -1,8 +1,5 @@
 package com.luispiquinrey.KnotCommerce.Controllers;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.luispiquinrey.KnotCommerce.Configuration.RabbitAMQP.RabbitMQPublisher;
-import com.luispiquinrey.KnotCommerce.DTOs.CategoryNode;
+import com.luispiquinrey.KnotCommerce.DTOs.ProductPaymentDTO;
 import com.luispiquinrey.KnotCommerce.DTOs.MapperDTOs.MapperProductAndPayment;
-import com.luispiquinrey.KnotCommerce.DTOs.ProductNode;
 import com.luispiquinrey.KnotCommerce.Entities.Category;
 import com.luispiquinrey.KnotCommerce.Entities.Product.Product;
+import com.luispiquinrey.KnotCommerce.Enums.Tactic;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductCreationException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductDeleteException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductUpdateException;
-import com.luispiquinrey.KnotCommerce.Service.ImplServiceProduct;
-import com.luispiquinrey.KnotCommerce.Service.ImplServiceProductNode;
+import com.luispiquinrey.KnotCommerce.Service.FacadeServiceProduct;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -49,7 +45,7 @@ public class RestControllerProduct {
     private static final Logger logger = LoggerFactory.getLogger(RestControllerProduct.class);
 
     @Autowired
-    private final ImplServiceProduct implServiceProduct;
+    private final FacadeServiceProduct facadeServiceProduct;
 
     @Autowired
     private final RabbitMQPublisher rabbitMQPublisher;
@@ -57,25 +53,20 @@ public class RestControllerProduct {
     @Autowired
     private final MapperProductAndPayment mapperProductAndPayment;
 
-    @Autowired
-    private final ImplServiceProductNode implServiceProductNode;
-
-    public RestControllerProduct(ImplServiceProduct implServiceProduct,RabbitMQPublisher rabbitMQPublisher,
-        MapperProductAndPayment mapperProductAndPayment,ImplServiceProductNode implServiceProductNode){
-        this.implServiceProduct = implServiceProduct;
+    public RestControllerProduct(RabbitMQPublisher rabbitMQPublisher, MapperProductAndPayment mapperProductAndPayment, FacadeServiceProduct facadeServiceProduct){
         this.rabbitMQPublisher=rabbitMQPublisher;
         this.mapperProductAndPayment=mapperProductAndPayment;
-        this.implServiceProductNode=implServiceProductNode;
+        this.facadeServiceProduct=facadeServiceProduct;
     }
 
     @PostMapping("/buyProduct/{id}")
     public ResponseEntity<?> buyProduct(@PathVariable Long id) {
         try {
-            if (!implServiceProduct.existsById(id)) {
+            if (!facadeServiceProduct.existsById(id)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Product with id " + id + " not found.");
             }
-            Product product = implServiceProduct.getProductOrThrow(id);
+            Product product = facadeServiceProduct.getProductOrThrow(id);
 
 
             if (product.getStock() == null || product.getStock() <= 0) {
@@ -85,7 +76,7 @@ public class RestControllerProduct {
 
             product.setStock(product.getStock() - 1);
 
-            implServiceProduct.updateProduct(product);
+            facadeServiceProduct.updateProduct(product);
 
             return ResponseEntity.ok("Product with id " + id + " purchased successfully. Remaining stock: " + product.getStock());
 
@@ -126,17 +117,10 @@ public class RestControllerProduct {
             return ResponseEntity.badRequest().body(sb.toString().trim());
         }
         try {
-            implServiceProduct.createProduct(product);
-
-            List<CategoryNode> categoryNodes=null;
-            if (product.getCategories() != null) {
-                categoryNodes = product.getCategories().stream()
-                    .map(cat -> new CategoryNode(cat.getId_Category(), cat.getName(), null))
-                    .collect(Collectors.toList());
-            }
-
-            ProductNode productNode = new ProductNode(product.getId_Product(), categoryNodes);
-            rabbitMQPublisher.sendMessageStripe(mapperProductAndPayment.toPaymentDTO(product));
+            facadeServiceProduct.createProduct(product);
+            ProductPaymentDTO paymentDTO=mapperProductAndPayment.toPaymentDTO(product);
+            paymentDTO.setTactic(Tactic.CREATE_PRODUCT);
+            rabbitMQPublisher.sendMessageStripe(paymentDTO);
 
             return ResponseEntity.status(HttpStatus.CREATED)
                 .body(product.toString() );
@@ -166,7 +150,8 @@ public class RestControllerProduct {
     @DeleteMapping("/deleteProduct/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id){
         try{
-            implServiceProduct.deleteProductById(id);
+            facadeServiceProduct.deleteProductById(id);
+
             return ResponseEntity.status(HttpStatus.OK)
                 .body("Product with the id: " + id + " correctly deleted");
         }catch(ProductDeleteException e){
@@ -192,7 +177,8 @@ public class RestControllerProduct {
     @PutMapping("/updateProduct")
     public ResponseEntity<?> updateProduct(@RequestBody Product product){
         try{
-            implServiceProduct.updateProduct(product);
+            facadeServiceProduct.updateProduct(product);
+
             return ResponseEntity.status(HttpStatus.OK)
                 .body("Product with id: " + product.getId_Product() + " correctly updated");
         }catch(ProductUpdateException e){
@@ -221,7 +207,8 @@ public class RestControllerProduct {
     @GetMapping("/getProductById/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Long id){
         try{
-            Product product = implServiceProduct.getProductOrThrow(id);
+            Product product = facadeServiceProduct.getProductOrThrow(id);
+
             return ResponseEntity.status(HttpStatus.OK)
                 .body(product.productToJson());
         }catch(EntityNotFoundException | JsonProcessingException e){
@@ -243,7 +230,7 @@ public class RestControllerProduct {
     @GetMapping("/availableProducts")
     public ResponseEntity<?> getAvailableProducts() {
         try {
-            return ResponseEntity.ok(implServiceProduct.findAvailableProducts());
+            return ResponseEntity.ok(facadeServiceProduct.findAvailableProducts());
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -270,7 +257,7 @@ public class RestControllerProduct {
     @GetMapping("/productsByCategory/{categoryName}")
     public ResponseEntity<?> getProductsByCategory(@PathVariable String categoryName) {
         try {
-            return ResponseEntity.ok(implServiceProduct.findByCategoryName(categoryName));
+            return ResponseEntity.ok(facadeServiceProduct.findByCategoryName(categoryName));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -302,7 +289,7 @@ public class RestControllerProduct {
             @RequestParam double minPrice,
             @RequestParam double maxPrice) {
         try {
-            return ResponseEntity.ok(implServiceProduct.findByPriceRange(minPrice, maxPrice));
+            return ResponseEntity.ok(facadeServiceProduct.findByPriceRange(minPrice, maxPrice));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -326,7 +313,7 @@ public class RestControllerProduct {
     @DeleteMapping("/deleteByCategory")
     public ResponseEntity<?> deleteByCategory(@RequestBody Category category) {
         try {
-            implServiceProduct.deleteByCategory(category);
+            facadeServiceProduct.deleteByCategory(category);
             return ResponseEntity.ok("Products in category '" + category.getName() + "' deleted successfully!");
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -357,7 +344,7 @@ public class RestControllerProduct {
     @PutMapping("/updateStock/{id}")
     public ResponseEntity<?> updateStock(@PathVariable Long id, @RequestParam int stock) {
         try {
-            implServiceProduct.updateStock(id, stock);
+            facadeServiceProduct.updateStock(id, stock);
             return ResponseEntity.ok("Stock updated for product with id: " + id);
         } catch (ProductUpdateException e) {
             logger.error(e.getMessage());
@@ -378,7 +365,7 @@ public class RestControllerProduct {
     @GetMapping("/findAllProducts")
     public ResponseEntity<?> getAllProducts() {
         try {
-            return ResponseEntity.ok(implServiceProduct.findAllProducts());
+            return ResponseEntity.ok(facadeServiceProduct.findAllProducts());
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

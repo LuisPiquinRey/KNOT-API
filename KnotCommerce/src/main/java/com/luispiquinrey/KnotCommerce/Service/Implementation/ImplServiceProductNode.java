@@ -1,4 +1,4 @@
-package com.luispiquinrey.KnotCommerce.Service;
+package com.luispiquinrey.KnotCommerce.Service.Implementation;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,11 +15,8 @@ import com.luispiquinrey.KnotCommerce.Entities.Product.Product;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductNodeCreationException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductNodeDeleteException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductNodeUpdateException;
-import com.luispiquinrey.KnotCommerce.Exceptions.ProductUpdateException;
 import com.luispiquinrey.KnotCommerce.Repository.RepositoryProductNode;
 import com.luispiquinrey.KnotCommerce.Service.Interface.IProductCrudService;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ImplServiceProductNode implements IProductCrudService {

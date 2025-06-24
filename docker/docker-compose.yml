@@ -17,3 +17,10 @@ services:
     ports:
       - "6379:6379"
     restart: always
+
+  nexus:
+    image: sonatype/nexus3
+    container_name: nexusContainer
+    ports:
+      - "9090:8081"
+    restart: always
