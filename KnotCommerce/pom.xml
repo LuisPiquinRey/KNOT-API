@@ -180,8 +180,8 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>KnotCenterMaven</id>
-            <url>http://localhost:9090/repository/KnotCenterMaven-snapshots/</url>
+            <id>KnotAPI</id>
+            <url>http://localhost:9090/repository/KnotAPI/</url>
         </snapshotRepository>
     </distributionManagement>
 
