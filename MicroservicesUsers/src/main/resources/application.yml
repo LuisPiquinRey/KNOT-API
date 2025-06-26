@@ -3,3 +3,5 @@ spring:
         name: MicroservicesUsers
     config:
         import: configserver:http://localhost:8071/
+    app:
+        jwtSecret: "s3cR3tK3y!9x7*Bv@fL1#QzYpRw2T^UcMnXg"

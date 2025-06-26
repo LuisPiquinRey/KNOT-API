@@ -29,13 +29,13 @@ enum Role {
     ROLE_ADMIN
 }
 @Entity
-@Table(name = "User")
+@Table(name = "user")
 public class User extends RepresentationModel<User> implements UserDetails {
 
     private static final Logger log = LoggerFactory.getLogger(User.class);
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_user")
     private Long id_user;
 
