@@ -12,13 +12,20 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 
+import com.luispiquinrey.MicroservicesUsers.Configuration.Security.Filter.CustomServiceUser;
+import com.luispiquinrey.MicroservicesUsers.Configuration.Security.Filter.JwtTokenFilter;
 import com.luispiquinrey.MicroservicesUsers.Repository.RepositoryUser;
-import com.luispiquinrey.MicroservicesUsers.Service.CustomServiceUser;
 
 @Configuration
 public class SecurityManagment {
+
+    @Bean
+    public JwtTokenFilter jwtTokenFilter(){
+        return new JwtTokenFilter();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -26,7 +33,10 @@ public class SecurityManagment {
             .csrf(csrf -> csrf.disable())
             .formLogin(form -> form.disable())
             .httpBasic(Customizer.withDefaults())
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/signIn").permitAll()
+                .anyRequest().authenticated())
+            .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

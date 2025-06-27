@@ -1,4 +1,4 @@
-package com.luispiquinrey.MicroservicesUsers.Service;
+package com.luispiquinrey.MicroservicesUsers.Configuration.Security.Filter;
 
 import java.util.List;
 
