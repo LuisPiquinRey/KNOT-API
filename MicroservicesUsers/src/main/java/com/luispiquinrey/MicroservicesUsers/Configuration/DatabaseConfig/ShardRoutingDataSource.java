@@ -1,7 +1,6 @@
-package com.luispiquinrey.MicroservicesUsers.Configuration;
+package com.luispiquinrey.MicroservicesUsers.Configuration.DatabaseConfig;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.springframework.lang.Nullable;
 
 public class ShardRoutingDataSource extends AbstractRoutingDataSource{
     private static final ThreadLocal<String> currentShard=new ThreadLocal<>();

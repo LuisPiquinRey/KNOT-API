@@ -3,6 +3,8 @@ package com.luispiquinrey.MicroservicesUsers.Controllers;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.naming.AuthenticationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,17 +49,23 @@ public class RestControllerUsers {
         this.authenticationManager=authenticationManager;
     }
     @PostMapping("/signIn")
-    public ResponseEntity<?> signIn(LoginRequest loginRequest){
-        Authentication authentication=authenticationManager
-            .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                String jwtToken = jwtManager.generateToken(userDetails);
-        Map<String, String> response = new HashMap<>();
-        response.put("token", jwtToken);
-        response.put("username", userDetails.getUsername());
+    public ResponseEntity<?> signIn(@RequestBody LoginRequest loginRequest){
+        try{
+            Authentication authentication=authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        return ResponseEntity.ok(response);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String jwtToken = jwtManager.generateToken(userDetails);
+            Map<String, String> response = new HashMap<>();
+            response.put("token", jwtToken);
+            response.put("username", userDetails.getUsername());
+        
+            return ResponseEntity.ok(response);
+        }catch(org.springframework.security.core.AuthenticationException e){
+            return ResponseEntity
+                .badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/createUser")

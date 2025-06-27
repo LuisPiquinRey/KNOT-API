@@ -1,4 +1,4 @@
-package com.luispiquinrey.MicroservicesUsers.Configuration;
+package com.luispiquinrey.MicroservicesUsers.Configuration.DatabaseConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class DataSourceConfig {
     public DataSource sha2DataSource() {
         return sha2Properties().initializeDataSourceBuilder().build();
     }
-    
+
     @Bean(name = "transactionManager")
     @Primary
     public PlatformTransactionManager transictionManager(EntityManagerFactory entityManagerFactory){

@@ -14,6 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.luispiquinrey.MicroservicesUsers.Configuration.Mask.Mask;
+import com.luispiquinrey.MicroservicesUsers.Configuration.Mask.MaskSerializer;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,6 +46,8 @@ public class User extends RepresentationModel<User> implements UserDetails {
     private String username;
 
     @Column(name="email")
+    @Mask
+    @JsonSerialize(using = MaskSerializer.class)
     private String email;
 
     @Column(name="password", nullable = false)

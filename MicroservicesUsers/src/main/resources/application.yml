@@ -4,4 +4,5 @@ spring:
     config:
         import: configserver:http://localhost:8071/
     app:
-        jwtSecret: "s3cR3tK3y!9x7*Bv@fL1#QzYpRw2T^UcMnXg"
+        jwtSecret: "czNjUjN0SzN5ITl4NypCdkBmTDEjUXpZcFJ3MlRdVWNNblhn"
+        privateKeySSL: ${PRIVATE_KEY_OPENSSL}
