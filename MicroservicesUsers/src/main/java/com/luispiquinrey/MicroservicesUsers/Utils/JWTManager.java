@@ -30,6 +30,7 @@ public class JWTManager {
     private String secretCode;
 
     private static final long EXPIRATION_TIME_MS = 10 * 60 * 1000;
+    private static final long EXPIRATION_TIME_REFRESH_TOKEN= 30L * 24 * 60 * 60 * 1000;
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
@@ -39,6 +40,17 @@ public class JWTManager {
                 .subject(userDetails.getUsername())
                 .claims(claims)
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_MS))
+                .signWith(getKey())
+                .compact();
+    }
+        public String generateRefreshToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("authorities", userDetails.getAuthorities().iterator().next().getAuthority());
+
+        return Jwts.builder()
+                .subject(userDetails.getUsername())
+                .claims(claims)
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_REFRESH_TOKEN))
                 .signWith(getKey())
                 .compact();
     }

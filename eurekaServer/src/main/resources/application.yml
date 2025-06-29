@@ -3,6 +3,9 @@ spring:
         name: eurekaServer
     config:
         import: optional:configserver:http://localhost:8071/
+    output:
+        ansi:
+            enabled: always
 eureka:
     instance:
         hostname: localhost
@@ -13,3 +16,16 @@ eureka:
             defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
 server:
     port: 8761
+logging:
+    charset:
+        console: UTF-8
+    pattern:
+        console: "\
+%clr(%d{yy-MM-dd E HH:mm:ss.SSS}){bright_red}  \
+%clr(%-5level){red}  \
+%clr(${PID}){red}  \
+%clr(---){red}  \
+%clr([%thread]){red}  \
+%clr(%-40.40logger{0}){red}  \
+%clr(:){red}  \
+%clr(%msg){white}%n%wex"

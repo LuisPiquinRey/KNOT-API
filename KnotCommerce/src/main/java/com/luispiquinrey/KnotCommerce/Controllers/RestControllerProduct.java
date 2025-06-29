@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.luispiquinrey.KnotCommerce.Configuration.RabbitAMQP.RabbitMQPublisher;
-import com.luispiquinrey.KnotCommerce.DTOs.ProductPaymentDTO;
 import com.luispiquinrey.KnotCommerce.DTOs.MapperDTOs.MapperProductAndPayment;
+import com.luispiquinrey.KnotCommerce.DTOs.ProductPaymentDTO;
 import com.luispiquinrey.KnotCommerce.Entities.Category;
 import com.luispiquinrey.KnotCommerce.Entities.Product.Product;
 import com.luispiquinrey.KnotCommerce.Enums.Tactic;

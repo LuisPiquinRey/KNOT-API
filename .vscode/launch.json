@@ -14,6 +14,16 @@
         },
         {
             "type": "java",
+            "name": "Spring Boot-GatewayApplication<gateway>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.luispiquinrey.gateway.GatewayApplication",
+            "projectName": "gateway",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-CentralizedServerMicroservicesApplication<centralizedServerMicroservices>",
             "request": "launch",
             "cwd": "${workspaceFolder}",

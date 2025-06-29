@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import com.luispiquinrey.KnotCommerce.DTOs.ProductPaymentDTO;
 
+
+
 @Component
 public class RabbitMQPublisher {
 

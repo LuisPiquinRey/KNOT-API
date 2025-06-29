@@ -6,3 +6,19 @@ spring:
     app:
         jwtSecret: "czNjUjN0SzN5ITl4NypCdkBmTDEjUXpZcFJ3MlRdVWNNblhn"
         privateKeySSL: ${PRIVATE_KEY_OPENSSL}
+    output:
+        ansi:
+            enabled: always
+logging:
+    charset:
+        console: UTF-8
+    pattern:
+        console: "\
+%clr(%d{yy-MM-dd E HH:mm:ss.SSS}){bright_magenta}  \
+%clr(%-5level){bright_magenta}  \
+%clr(${PID}){magenta}  \
+%clr(---){magenta}  \
+%clr([%thread]){magenta}  \
+%clr(%-40.40logger{0}){magenta}  \
+%clr(:){magenta}  \
+%clr(%msg){white}%n%wex"

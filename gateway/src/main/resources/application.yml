@@ -1,0 +1,54 @@
+server:
+    port: 8095
+
+spring:
+    application:
+        name: gateway
+    app:
+        jwtSecret: "czNjUjN0SzN5ITl4NypCdkBmTDEjUXpZcFJ3MlRdVWNNblhn"
+    cloud:
+        gateway:
+            server:
+                webflux:
+                    discovery:
+                        locator:
+                            enabled: true
+                            lower-case-service-id: true
+    output:
+        ansi:
+            enabled: always
+logging:
+    charset:
+        console: UTF-8
+    pattern:
+        console: "\
+%clr(%d{yy-MM-dd E HH:mm:ss.SSS}){bright_cyan}  \
+%clr(%-5level){bright_cyan}  \
+%clr(${PID}){cyan}  \
+%clr(---){cyan}  \
+%clr([%thread]){cyan}  \
+%clr(%-40.40logger{0}){cyan}  \
+%clr(:){bright_cyan}  \
+%clr(%msg){white}%n%wex"
+
+eureka:
+    instance:
+        preferIpAddress: true
+    client:
+        register-with-eureka: true
+        fetch-registry: true
+        service-url:
+            defaultZone: http://localhost:8761/eureka/
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: "*" 
+    endpoint:
+        gateway:
+            access: unrestricted
+        
+
+
+

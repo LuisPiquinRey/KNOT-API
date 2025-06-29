@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.luispiquinrey.MicroservicesUsers.Configuration.Mask.Mask;
 import com.luispiquinrey.MicroservicesUsers.Configuration.Mask.MaskSerializer;
+import com.luispiquinrey.MicroservicesUsers.Enums.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,10 +28,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-enum Role {
-    ROLE_USER,
-    ROLE_ADMIN
-}
 @Entity
 @Table(name = "user")
 public class User extends RepresentationModel<User> implements UserDetails {
@@ -55,7 +52,7 @@ public class User extends RepresentationModel<User> implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'ROLE_USER'")
-    private Role role = Role.ROLE_USER;
+    private Role role = Role.USER;
 
     public User() {}
 
