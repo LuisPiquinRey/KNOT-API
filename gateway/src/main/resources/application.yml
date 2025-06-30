@@ -4,8 +4,6 @@ server:
 spring:
     application:
         name: gateway
-    app:
-        jwtSecret: "czNjUjN0SzN5ITl4NypCdkBmTDEjUXpZcFJ3MlRdVWNNblhn"
     cloud:
         gateway:
             server:

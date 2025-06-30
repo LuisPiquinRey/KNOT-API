@@ -15,11 +15,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.luispiquinrey.MicroservicesUsers.Configuration.DatabaseConfig.RoleConverter;
 import com.luispiquinrey.MicroservicesUsers.Configuration.Mask.Mask;
 import com.luispiquinrey.MicroservicesUsers.Configuration.Mask.MaskSerializer;
 import com.luispiquinrey.MicroservicesUsers.Enums.Role;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -52,7 +54,8 @@ public class User extends RepresentationModel<User> implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'ROLE_USER'")
-    private Role role = Role.USER;
+    @Convert(converter = RoleConverter.class)
+    private Role role = Role.ROLE_USER;
 
     public User() {}
 

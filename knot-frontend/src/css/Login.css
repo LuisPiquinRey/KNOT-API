@@ -1,0 +1,141 @@
+.blocklogin{
+    width: 500px;
+    height: 600px;
+    background-color: #0d526b;
+    padding: 3px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    align-items: center;
+    margin: 0;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #112a3c;
+}
+.circle{
+    width: 250px;
+    height: 250px;
+    border-radius: 100%;
+    background-color: #05d3ec;
+    position: absolute;
+    z-index: 0;
+    top: -100px;
+    left: 250px;
+    pointer-events: none;
+}
+.inputlogin{
+    position: relative;
+    background-color: #ffffff;
+    width: 350px;
+    height: 40px;
+    border-radius: 30px;
+    box-sizing: border-box;
+    border: none;
+    margin: 20px;
+    padding-left: 10px;
+    box-shadow: 0px 0px 8px black;
+    outline: none;
+    z-index: inherit;
+}.bubble-login{
+    opacity: 0.6;
+}
+.input-group{
+    display: flex;
+    position: relative;
+    justify-content:end ;
+    align-items: center;
+}
+.inputlogin::placeholder{
+    font-size: 15px;
+    font-family: inherit;
+    color: #080808;
+    border-radius: 20px;
+    padding: 5px;
+}
+
+#titlelogin{
+    font-size: 50px;
+    color: #098aa8;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 10px;
+    display: block;
+    z-index: 1;
+}
+#submitlogin{
+    border-radius: 20px;
+    border: none;
+    width: 100px;
+    height: 45px;
+    background-color: #ffffff;
+    margin-right: 20px;
+    margin-left: 10px;
+    color: #112a3c;
+    font-size: 15px;
+    outline: 3px solid #112a3c;
+    outline-offset: -5px;
+}
+
+#icon-password{
+    height: 25px;
+    position: absolute;
+    right: 30px;
+}
+
+#contentlogin{
+    opacity: 0.5;
+    background-color: #0d7891;
+    width: 450px;
+    height: 500px;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#contentlogin .circle:nth-child(1){
+    top: 100px;
+    left: -150px;
+    height: 500px;
+}
+#formlogin{
+    background-color: #112a3c;
+    width: 400px;
+    height: 400px;
+    position: relative;
+    border-radius: inherit;
+    display: inherit;
+    flex-direction: column;
+    align-items: inherit;
+    justify-content: inherit;
+    outline: 3px solid #0d7891;
+    outline-offset: -15px;
+    z-index: 3;
+    overflow: hidden;
+}
+#icon-user{
+    width: 120px;
+    height: 120px;
+    position: absolute;
+    background-color: #ffffff;
+    border-radius: 100%;
+    z-index: 4;
+    top: 10px;
+    outline: 5px solid #112a3c;
+    outline-offset: -7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#icon{
+    height: 70px;
+}

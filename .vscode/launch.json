@@ -38,16 +38,6 @@
         },
         {
             "type": "java",
-            "name": "Spring Boot-MicroservicesUserApplication<MicroservicesUser>",
-            "request": "launch",
-            "cwd": "${workspaceFolder}",
-            "mainClass": "com.luispiquinrey.MicroservicesUser.MicroservicesUserApplication",
-            "projectName": "MicroservicesUser",
-            "args": "",
-            "envFile": "${workspaceFolder}/.env"
-        },
-        {
-            "type": "java",
             "name": "Spring Boot-EurekaServerApplication<eurekaServer>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
@@ -78,7 +68,8 @@
             "args": "",
             "envFile": "${workspaceFolder}/.env",
             "env": {
-                "PRIVATE_KEY_OPENSSL": "MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC/sup3g54j/DWxELohyDxoMtf7IiVwcofBbdFW1qCyFh1F0HC4HVR9nCwJ69UgEUEg9zWIcJ5dBW8moHGOK0uCv28IRq++jLstlcKGMnuODa5VOY0gTgZal3yIoPgWdJ8TYX1MUR6yszDvJX3/tScOiFFYTVrxWvhlObwyBsaZGusY3FfJNEx8PnIJNjEjMVGuBokaSSYkopoT+mvQPfFCo6MN3NTA9MAC2vgvEViCfPOWHVx0G5p/Uyz0rHjspef4iIxVEHrkrkqiDE77/sZsd9EXv4aKefycfEP5/DJYp6TY/XF8Aci6aDTA1NXtMrNYLHe0PiM0UfBgrP6SP2u7AgMBAAECggEAHyAcw9UCC1O7IAnYPv31GPIQcX1E2PIvqq97Cv+ETgYbMKe8dZiFjHOcDuxUyYUjrweUkJfAjtgACSSJ64yKESumCpD3nhfZmHg1gnaV6yW7haj3iiRBEdqA5OpF/ddnsMzmfEq7kkZYDqxmvesa8Vge5RiCSKf9punt7a1994PIMnQDYFxS3pI6SkqavBKmAc1nnteVPkzWnsIBDW+kCQ5mQrmYycqKZ1JJq1bsRtb1nloj2AK17LUQ+BQwodKPUEbIzd+nyLbN5lgQ+XgibgivO57udEfWSHnerYFUH5rhW/rwvbQovC4tOpLmSyrVGUHW+d2gkJtNJVcRG24NIQKBgQDwuOMmgPlTsPmc7ayW626LivP+FKI7/Atnd3UpsGcYqAUgF0i5RkfITrN65pb687rQvX2qr0nYaINBnNvOnVRxUmHsEMh6nKxdxIzINWYbYd/J4QhYCrTJmHX3ww+9l6Hogg9I876Rm/gjtTGOOeQ0H6a2q4y++V2qHA78jWsuSwKBgQDL3YbG/ENEK3+DUoMnflZkKZUMA7j0vzDnzRQSC85wRa8zO3vYOmKTbwsZ7tkdWlSdE6rsuyioJQfWbugnGQn79S2+x8VHXQtE3YwNjyoTkaDHYXyM/k7L/gfPRd0LPNkoREERip9lA1/wHcAUn7hxBkRb7Pzf9FLNy3Th122SUQKBgEtnjvfztKYrrLUkmkiYLQOXHkD706n4lNXvTIsnj9PgZeKciJJI2pl7Vats6eRoTp+ui9vYlsgsTNlTumLpU5c/2B6rTzFhPHkO5Y6dc4OmUASb8hIqIGF52ZInzxlzkysS+pi+iXZxJfSBgKltpvdQ5tcXu7niwR1VNriTz/wrAoGAEJepHoztlKDNsgyHLDG2KlTQErhC13iwLE2espFPbgfd6JeQztqBp2pERwoPlboCZP5yzO22s2jAKI3CS1xYWa9s17g+sD48apB1k6zxScJyiYe/sWIJW8UDMbWH9iAvtH1JpnnX20rZBhwFxCfzxQ8zhR/WvQuPqbxDeRYljuECgYBUbr65JpnfH0Lp3Eb5JYEerQspnTjRHGWzBF4nVbBKGqc7LUoQa/vQBT9htGaeQZcwYVaSlLxi0jsWDrHZnRaArxAwimMNXOznF0VgiEin4y1HagEtMQS4IfzIeeDvRPWnITz6ebhN+HE85pMTrDkorb4ZCOdS/vhGTtnIYlMX7g=="
+                "PRIVATE_KEY_OPENSSL": "MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC/sup3g54j/DWxELohyDxoMtf7IiVwcofBbdFW1qCyFh1F0HC4HVR9nCwJ69UgEUEg9zWIcJ5dBW8moHGOK0uCv28IRq++jLstlcKGMnuODa5VOY0gTgZal3yIoPgWdJ8TYX1MUR6yszDvJX3/tScOiFFYTVrxWvhlObwyBsaZGusY3FfJNEx8PnIJNjEjMVGuBokaSSYkopoT+mvQPfFCo6MN3NTA9MAC2vgvEViCfPOWHVx0G5p/Uyz0rHjspef4iIxVEHrkrkqiDE77/sZsd9EXv4aKefycfEP5/DJYp6TY/XF8Aci6aDTA1NXtMrNYLHe0PiM0UfBgrP6SP2u7AgMBAAECggEAHyAcw9UCC1O7IAnYPv31GPIQcX1E2PIvqq97Cv+ETgYbMKe8dZiFjHOcDuxUyYUjrweUkJfAjtgACSSJ64yKESumCpD3nhfZmHg1gnaV6yW7haj3iiRBEdqA5OpF/ddnsMzmfEq7kkZYDqxmvesa8Vge5RiCSKf9punt7a1994PIMnQDYFxS3pI6SkqavBKmAc1nnteVPkzWnsIBDW+kCQ5mQrmYycqKZ1JJq1bsRtb1nloj2AK17LUQ+BQwodKPUEbIzd+nyLbN5lgQ+XgibgivO57udEfWSHnerYFUH5rhW/rwvbQovC4tOpLmSyrVGUHW+d2gkJtNJVcRG24NIQKBgQDwuOMmgPlTsPmc7ayW626LivP+FKI7/Atnd3UpsGcYqAUgF0i5RkfITrN65pb687rQvX2qr0nYaINBnNvOnVRxUmHsEMh6nKxdxIzINWYbYd/J4QhYCrTJmHX3ww+9l6Hogg9I876Rm/gjtTGOOeQ0H6a2q4y++V2qHA78jWsuSwKBgQDL3YbG/ENEK3+DUoMnflZkKZUMA7j0vzDnzRQSC85wRa8zO3vYOmKTbwsZ7tkdWlSdE6rsuyioJQfWbugnGQn79S2+x8VHXQtE3YwNjyoTkaDHYXyM/k7L/gfPRd0LPNkoREERip9lA1/wHcAUn7hxBkRb7Pzf9FLNy3Th122SUQKBgEtnjvfztKYrrLUkmkiYLQOXHkD706n4lNXvTIsnj9PgZeKciJJI2pl7Vats6eRoTp+ui9vYlsgsTNlTumLpU5c/2B6rTzFhPHkO5Y6dc4OmUASb8hIqIGF52ZInzxlzkysS+pi+iXZxJfSBgKltpvdQ5tcXu7niwR1VNriTz/wrAoGAEJepHoztlKDNsgyHLDG2KlTQErhC13iwLE2espFPbgfd6JeQztqBp2pERwoPlboCZP5yzO22s2jAKI3CS1xYWa9s17g+sD48apB1k6zxScJyiYe/sWIJW8UDMbWH9iAvtH1JpnnX20rZBhwFxCfzxQ8zhR/WvQuPqbxDeRYljuECgYBUbr65JpnfH0Lp3Eb5JYEerQspnTjRHGWzBF4nVbBKGqc7LUoQa/vQBT9htGaeQZcwYVaSlLxi0jsWDrHZnRaArxAwimMNXOznF0VgiEin4y1HagEtMQS4IfzIeeDvRPWnITz6ebhN+HE85pMTrDkorb4ZCOdS/vhGTtnIYlMX7g==",
+                "SECRET_DECODER": "czNjUjN0SzN5ITl4NypCdkBmTDEjUXpZcFJ3MlRdVWNNblhn"
             }
         },
         {
