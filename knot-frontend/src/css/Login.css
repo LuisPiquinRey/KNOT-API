@@ -69,18 +69,23 @@ body{
     display: block;
     z-index: 1;
 }
-#submitlogin{
+.submitlogin{
     border-radius: 20px;
     border: none;
     width: 100px;
     height: 45px;
-    background-color: #ffffff;
     margin-right: 20px;
     margin-left: 10px;
     color: #112a3c;
     font-size: 15px;
     outline: 3px solid #112a3c;
     outline-offset: -5px;
+}
+.token-true{
+    background-color: #05f805;
+}
+.token-false{
+    background-color: rgb(255, 255, 255);
 }
 
 #icon-password{
