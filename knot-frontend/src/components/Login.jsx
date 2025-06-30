@@ -1,14 +1,16 @@
 import '../css/Login.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEyeSlash, faUser } from '@fortawesome/free-solid-svg-icons';
-import { createContext, useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { useAuth } from './AuthContext';
 
 
 export function Login() {
     const [token, setToken] = useState('');
     const [role, setRole] = useState('');
+    const { login }=useAuth();
     const [dataUser, setDataUser] = useState({
         username: '',
         password: ''
@@ -32,6 +34,7 @@ export function Login() {
 
                 const decodedHeader = jwtDecode(response.data.token);
                 console.log(decodedHeader);
+                login (response.data.token, decodedHeader.role, dataUser);
             })
             .catch(() => {
                 alert('Error with token jwt');
