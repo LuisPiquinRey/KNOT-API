@@ -17,7 +17,6 @@ public class NoPerishableProductFieldMapper implements FieldSetMapper<NoPerishab
         NoPerishableProduct product = new NoPerishableProduct();
 
         product.setAvailable(fieldSet.readBoolean("available"));
-        product.setId_Product(fieldSet.readLong("id_Product"));
         product.setName(fieldSet.readString("name"));
         product.setPrice(fieldSet.readBigDecimal("price").doubleValue());
         product.setDescription(fieldSet.readString("description"));

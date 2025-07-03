@@ -16,10 +16,11 @@ import com.luispiquinrey.KnotCommerce.Exceptions.ProductNodeCreationException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductNodeDeleteException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductNodeUpdateException;
 import com.luispiquinrey.KnotCommerce.Repository.RepositoryProductNode;
-import com.luispiquinrey.KnotCommerce.Service.Interface.IProductCrudService;
+import com.luispiquinrey.KnotCommerce.Service.Interface.ICrudService;
+
 
 @Service
-public class ImplServiceProductNode implements IProductCrudService {
+public class ImplServiceProductNode implements ICrudService<Product, Long>{
 
     @Autowired
     private final RepositoryProductNode repositoryProductNode;
@@ -34,7 +35,7 @@ public class ImplServiceProductNode implements IProductCrudService {
         List<CategoryNode> categoryNodes = null;
         if (product.getCategories() != null) {
             categoryNodes = product.getCategories().stream()
-                .map(cat -> new CategoryNode(cat.getId_Category(), cat.getName(), null))
+                .map(cat -> new CategoryNode(cat.getId_Category(), cat.getName()))
                 .collect(Collectors.toList());
         }
         return new ProductNode(product.getId_Product(), categoryNodes);
@@ -42,7 +43,7 @@ public class ImplServiceProductNode implements IProductCrudService {
 
     @Transactional
     @Override
-    public void createProduct(Product product) throws ProductNodeCreationException {
+    public void createTarget(Product product) throws ProductNodeCreationException {
         try {
             ProductNode node = productToProductNode(product);
             repositoryProductNode.save(node);
@@ -55,7 +56,7 @@ public class ImplServiceProductNode implements IProductCrudService {
 
     @Transactional
     @Override
-    public void updateProduct(Product product) throws ProductNodeUpdateException {
+    public void updateTarget(Product product) throws ProductNodeUpdateException {
         Long id = product.getId_Product();
         try {
             if (repositoryProductNode.existsById(id)) {
@@ -74,7 +75,7 @@ public class ImplServiceProductNode implements IProductCrudService {
 
     @Transactional
     @Override
-    public void deleteProductById(Long id_Product) throws ProductNodeDeleteException {
+    public void deleteTargetById(Long id_Product) throws ProductNodeDeleteException {
         try {
             if (repositoryProductNode.existsById(id_Product)) {
                 repositoryProductNode.deleteById(id_Product);

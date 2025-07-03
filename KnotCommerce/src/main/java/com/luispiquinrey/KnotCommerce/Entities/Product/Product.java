@@ -43,136 +43,102 @@ import jakarta.persistence.Version;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 
-@Inheritance(strategy=jakarta.persistence.InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="product_type",
-        discriminatorType=jakarta.persistence.DiscriminatorType.STRING)
+@Inheritance(strategy = jakarta.persistence.InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "product_type", discriminatorType = jakarta.persistence.DiscriminatorType.STRING)
 @Entity
-@Table(name="Product",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "description")
-        })
-@JsonSubTypes({
-    @JsonSubTypes.Type(value = NoPerishableProduct.class, name = "noPerishable"),
-    @JsonSubTypes.Type(value = PerishableProduct.class, name = "perishable")
+@Table(name = "Product", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "description")
 })
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY,
-    property = "type"
-)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = NoPerishableProduct.class, name = "noPerishable"),
+        @JsonSubTypes.Type(value = PerishableProduct.class, name = "perishable")
+})
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @PropertySource("KnotCommerce/src/main/resources/validationProduct.yml")
-@Schema(
-    name = "Product",
-    description = "Representation of items",
-    example = """
-        {
-            "id_Category": 1,
-            "name": "Dairy",
-            "description": "Products derived from milk"
-        }
-    """
-)
-public abstract class Product implements Serializable{
+@Schema(name = "Product", description = "Representation of items", example = """
+            {
+                "id_Category": 1,
+                "name": "Dairy",
+                "description": "Products derived from milk"
+            }
+        """)
+public abstract class Product implements Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(Product.class);
 
-    @Schema(
-        description="Indicates if the product is available for purchase",
-        example= "true"
-    )
-    @Column(name="available",columnDefinition="BIT")
+    @Schema(description = "Indicates if the product is available for purchase", example = "true")
+    @Column(name = "available", columnDefinition = "BIT")
     @JsonProperty("available")
     private boolean available;
 
-    @Schema(
-        description = "Unique identifier of the product",
-        example = "1"
-    )
+    @Schema(description = "Unique identifier of the product", example = "1")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_Product")
+    @Column(name = "id_Product")
     @JsonProperty("id_Product")
     private Long id_Product;
 
-    @Schema(
-        description = "Product name (5-20 characters)",
-        example = "Fresh Milk"
-    )
-    @Column(name="name")
+    @Schema(description = "Product name (5-20 characters)", example = "Fresh Milk")
+    @Column(name = "name")
     @JsonProperty("name")
-    @Length(min=5, max=20, message = "{product.length.name}")
+    @Length(min = 5, max = 20, message = "{product.length.name}")
     private String name;
 
-    @Schema(
-        description = "Price of the product (positive value)",
-        example = "2.5"
-    )
-    @Column(name="price")
+    @Schema(description = "Price of the product (positive value)", example = "2.5")
+    @Column(name = "price")
     @JsonProperty("price")
     @Positive(message = "{product.positive.price}")
     private double price;
 
-    @Schema(
-        description = "Short description of the product (5-100 characters)",
-        example = "1L organic milk"
-    )
-    @Column(name="description")
+    @Schema(description = "Short description of the product (5-100 characters)", example = "1L organic milk")
+    @Column(name = "description")
     @JsonProperty("description")
-    @Length(min=5, max=100, message = "{product.length.description}")
+    @Length(min = 5, max = 100, message = "{product.length.description}")
     private String description;
 
-    @Schema(
-        description = "Number of items available in stock (min 0)",
-        example = "100"
-    )
-    @Column(name="stock")
+    @Schema(description = "Number of items available in stock (min 0)", example = "100")
+    @Column(name = "stock")
     @JsonProperty("stock")
     @Min(value = 0, message = "{product.min.stock}")
     private Integer stock;
 
-    @Column(name="code_user")
+    @Column(name = "code_user")
     @JsonProperty("code_user")
     @Positive
     private Long code_User;
 
     @Version
-    @Column(name="version")
-    @JsonIgnore
+    @Column(name = "version")
+    @JsonProperty("version")
     private Integer version;
 
-    @Schema(
-        description = "Categories to which the product belongs",
-        example = """
-            [
-                {
-                    "id_Category": 1,
-                    "name": "Dairy",
-                    "description": "Products derived from milk"
-                },
-                {
-                    "id_Category": 2,
-                    "name": "Organic",
-                    "description": "Natural and pesticide-free items"
-                }
-            ]
-    """
-    )
+    @Schema(description = "Categories to which the product belongs", example = """
+                    [
+                        {
+                            "id_Category": 1,
+                            "name": "Dairy",
+                            "description": "Products derived from milk"
+                        },
+                        {
+                            "id_Category": 2,
+                            "name": "Organic",
+                            "description": "Natural and pesticide-free items"
+                        }
+                    ]
+            """)
     @ManyToMany
     @OrderBy("name")
-    @JoinTable(
-        name = "Product_Category",
-        joinColumns = @JoinColumn(name = "id_Product"),
-        inverseJoinColumns = @JoinColumn(name = "id_Category")
-    )
+    @JoinTable(name = "Product_Category", joinColumns = @JoinColumn(name = "id_Product"), inverseJoinColumns = @JoinColumn(name = "id_Category"))
     private List<Category> categories;
 
-    public Product() {}
+    public Product() {
+    }
 
     public Product(boolean available, Long id_Product,
             @Length(min = 5, max = 20, message = "{product.length.name}") String name,
             @Positive(message = "{product.positive.price}") double price,
             @Length(min = 5, max = 100, message = "{product.length.description}") String description,
-            @Min(value = 0, message = "{product.min.stock}") Integer stock, @Positive Long code_User, Integer version,
+            @Min(value = 0, message = "{product.min.stock}") Integer stock, @Positive Long code_User,
             List<Category> categories) {
         this.available = available;
         this.id_Product = id_Product;
@@ -181,23 +147,20 @@ public abstract class Product implements Serializable{
         this.description = description;
         this.stock = stock;
         this.code_User = code_User;
-        this.version = version;
         this.categories = categories;
     }
 
-    public Product(boolean available, Long id_Product,
+    public Product(boolean available,
             @Length(min = 5, max = 20, message = "{product.length.name}") String name,
             @Positive(message = "{product.positive.price}") double price,
             @Length(min = 5, max = 100, message = "{product.length.description}") String description,
-            @Min(value = 0, message = "{product.min.stock}") Integer stock, Integer version,
+            @Min(value = 0, message = "{product.min.stock}") Integer stock,
             List<Category> categories) {
         this.available = available;
-        this.id_Product = id_Product;
         this.name = name;
         this.price = price;
         this.description = description;
         this.stock = stock;
-        this.version = version;
         this.categories = categories;
     }
 
@@ -219,10 +182,7 @@ public abstract class Product implements Serializable{
         this.price = price;
         this.stock = stock;
         this.code_User = code_User;
-    } 
-
-
-    
+    }
 
     public Product(@Length(min = 5, max = 20, message = "{product.length.name}") String name,
             @Positive(message = "{product.positive.price}") double price,
@@ -238,14 +198,6 @@ public abstract class Product implements Serializable{
 
     public void setAvailable(boolean available) {
         this.available = available;
-    }
-
-    public Long getId_Product() {
-        return id_Product;
-    }
-
-    public void setId_Product(Long id_Product) {
-        this.id_Product = id_Product;
     }
 
     public String getName() {
@@ -287,6 +239,7 @@ public abstract class Product implements Serializable{
     public void setVersion(Integer version) {
         this.version = version;
     }
+
     public Long getCode_User() {
         return code_User;
     }
@@ -294,26 +247,38 @@ public abstract class Product implements Serializable{
     public void setCode_User(Long code_User) {
         this.code_User = code_User;
     }
+    
+    public Long getId_Product() {
+        return id_Product;
+    }
 
-    public String productToJson() throws JsonProcessingException{
-        ObjectMapper mapper=new ObjectMapper();
+    // Setter protegido para permitir la deserialización por Jackson, pero no exponerlo públicamente
+    protected void setIdProduct(Long idProduct) {
+        this.id_Product = idProduct;
+    }
+
+    public String productToJson() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
         ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
-        String json=writer.writeValueAsString(this);
+        String json = writer.writeValueAsString(this);
         log.info("""
                 \u001b[32m\ud83d\uded2 Product JSON formatted:
                 """ + json + "\u001B[0m");
         return json;
     }
+
     public List<Category> getCategories() {
         return categories;
     }
+
     public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
+
     @PostConstruct
-    public void generateQR(){
+    public void generateQR() {
         log.info("Generating QRCode");
-        try{
+        try {
             MultiFormatWriter writerQR = new MultiFormatWriter();
             BitMatrix matrix = writerQR.encode(this.productToJson(), BarcodeFormat.QR_CODE, 250, 250);
             String dirName = "qrcodes";

@@ -41,10 +41,10 @@ public class PerishableProduct extends Product implements PrototypeProduct {
             @Length(min = 5, max = 20, message = "{product.length.name}") String name,
             @Positive(message = "{product.positive.price}") double price,
             @Length(min = 5, max = 100, message = "{product.length.description}") String description,
-            @Min(value = 0, message = "{product.min.stock}") Integer stock, Integer version, List<Category> categories,
+            @Min(value = 0, message = "{product.min.stock}") Integer stock, List<Category> categories,
             @NotNull(message = "{product.perishableProduct.notNull.expirationDate}") @Future(message = "{product.perishableProduct.future.expirationDate}") LocalDate expirationDate,
             @NotNull(message = "{product.perishableProduct.notNull.temperature}") Double recommendedTemperature) {
-        super(available, id_Product, name, price, description, stock, version, categories);
+        super(available, name, price, description, stock,categories);
         this.expirationDate = expirationDate;
         this.recommendedTemperature = recommendedTemperature;
     }
@@ -96,7 +96,6 @@ public class PerishableProduct extends Product implements PrototypeProduct {
             this.getPrice(),
             this.getDescription(),
             this.getStock(),
-            this.getVersion(),
             this.getCategories(),
             this.expirationDate,
             this.recommendedTemperature

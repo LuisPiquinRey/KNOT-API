@@ -26,7 +26,7 @@ import com.luispiquinrey.KnotCommerce.Enums.Tactic;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductCreationException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductDeleteException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductUpdateException;
-import com.luispiquinrey.KnotCommerce.Service.FacadeServiceProduct;
+import com.luispiquinrey.KnotCommerce.Service.Facade.FacadeServiceProduct;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -80,7 +80,7 @@ public class RestControllerProduct {
             paymentDTO.setTactic(Tactic.UPDATE_PRODUCT);
             rabbitMQPublisher.sendMessageStripe(paymentDTO);
 
-            facadeServiceProduct.updateProduct(product);
+            facadeServiceProduct.updateTarget(product);
 
             return ResponseEntity
                     .ok("Product with id " + id + " purchased successfully. Remaining stock: " + product.getStock());
@@ -111,7 +111,7 @@ public class RestControllerProduct {
             return ResponseEntity.badRequest().body(sb.toString().trim());
         }
         try {
-            facadeServiceProduct.createProduct(product);
+            facadeServiceProduct.createTarget(product);
             ProductPaymentDTO paymentDTO = mapperProductAndPayment.toPaymentDTO(product);
             paymentDTO.setTactic(Tactic.CREATE_PRODUCT);
             rabbitMQPublisher.sendMessageStripe(paymentDTO);
@@ -139,7 +139,7 @@ public class RestControllerProduct {
             paymentDTO.setTactic(Tactic.DELETE_PRODUCT);
             rabbitMQPublisher.sendMessageStripe(paymentDTO);
 
-            facadeServiceProduct.deleteProductById(id);
+            facadeServiceProduct.deleteTargetById(id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Product with the id: " + id + " correctly deleted");
         } catch (ProductDeleteException | EntityNotFoundException e) {
@@ -154,7 +154,7 @@ public class RestControllerProduct {
     @PutMapping("/updateProduct")
     public ResponseEntity<?> updateProduct(@RequestBody Product product) {
         try {
-            facadeServiceProduct.updateProduct(product);
+            facadeServiceProduct.updateTarget(product);
 
             ProductPaymentDTO paymentDTO = mapperProductAndPayment.toPaymentDTO(product);
             paymentDTO.setTactic(Tactic.UPDATE_PRODUCT);

@@ -8,7 +8,7 @@ import com.luispiquinrey.KnotCommerce.Entities.Product.Product;
 import jakarta.persistence.EntityNotFoundException;
 
 
-public interface IServiceProduct extends IProductCrudService{
+public interface IServiceProduct extends ICrudService<Product, Long>{
     public Product getProductOrThrow(Long id_Product) throws EntityNotFoundException;
     List<Product> findAvailableProducts();
     List<Product> findByCategoryName(String categoryName);

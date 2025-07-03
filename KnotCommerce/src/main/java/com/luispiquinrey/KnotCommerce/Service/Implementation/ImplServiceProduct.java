@@ -33,15 +33,15 @@ public class ImplServiceProduct implements IServiceProduct {
 
     private static final Logger logger = LoggerFactory.getLogger(ImplServiceProduct.class);
 
-    public ImplServiceProduct(RepositoryProduct repositoryProduct,CacheManager cacheManager) {
+    public ImplServiceProduct(RepositoryProduct repositoryProduct, CacheManager cacheManager) {
         this.repositoryProduct = repositoryProduct;
-        this.cacheManager=cacheManager;
+        this.cacheManager = cacheManager;
     }
 
     @Transactional
     @Override
     @CacheEvict(value = "products", key = "#id_Product")
-    public void deleteProductById(Long id_Product) {
+    public void deleteTargetById(Long id_Product) {
         if (repositoryProduct.existsById(id_Product)) {
             repositoryProduct.deleteById(id_Product);
             logger.info("\u001B[31m🗑️ [PRODUCT DELETED] ➤ Product with ID {} was deleted successfully.\u001B[0m",
@@ -56,25 +56,34 @@ public class ImplServiceProduct implements IServiceProduct {
     @Transactional
     @Override
     @CachePut(value = "products", key = "#product.id_Product")
-    public void updateProduct(Product product) throws ProductUpdateException {
+    public void updateTarget(Product product) throws ProductUpdateException {
         Long id = product.getId_Product();
-        if (repositoryProduct.existsById(id)) {
-            repositoryProduct.save(product);
-            logger.info("\u001B[36m🛠️ [PRODUCT UPDATED] ➤ Product with ID {} updated successfully.\u001B[0m", id);
-        } else {
-            logger.warn("\u001B[33m❌ [UPDATE FAILED] ➤ Product with ID {} does not exist.\u001B[0m", id);
-            throw new ProductUpdateException("Error updating product", id);
-        }
+        Product managed = repositoryProduct.findById(id)
+                .orElseThrow(() -> new ProductUpdateException("Error updating product: Product with ID " + id + " does not exist.", id));
+
+
+        managed.setName(product.getName());
+        managed.setPrice(product.getPrice());
+        managed.setDescription(product.getDescription());
+        managed.setStock(product.getStock());
+        managed.setAvailable(product.isAvailable());
+        managed.setCategories(product.getCategories());
+        managed.setCode_User(product.getCode_User());
+
+        repositoryProduct.save(managed);
+        logger.info("\u001B[36m🛠️ [PRODUCT UPDATED] ➤ Product with ID {} updated successfully.\u001B[0m", id);
     }
 
     /*
-     * ⚠️ WARNING! Remember that product IDs are generated automatically, so you need
-     *  to be careful with this implementation to ensure that Redis caches the ID only
-     *  after the product is created — otherwise, it may cause issues.
+     * ⚠️ WARNING! Remember that product IDs are generated automatically, so you
+     * need
+     * to be careful with this implementation to ensure that Redis caches the ID
+     * only
+     * after the product is created — otherwise, it may cause issues.
      */
     @Transactional
     @Override
-    public void createProduct(Product product) throws ProductCreationException {
+    public void createTarget(Product product) throws ProductCreationException {
         try {
             Product saved = repositoryProduct.save(product);
             logger.info("\u001B[32m🎉 [PRODUCT CREATED] ➤ Product created successfully:\n{}\u001B[0m", product);
@@ -147,7 +156,8 @@ public class ImplServiceProduct implements IServiceProduct {
             repositoryProduct.updateStock(id, stock);
             logger.info("\u001B[35m📦 [STOCK UPDATED] ➤ Product ID {} stock updated to {}.\u001B[0m", id, stock);
         } catch (Exception e) {
-            logger.error("\u001B[31m🚨 [STOCK UPDATE FAILED] ➤ Could not update stock for product ID {}.\u001B[0m", id,e);
+            logger.error("\u001B[31m🚨 [STOCK UPDATE FAILED] ➤ Could not update stock for product ID {}.\u001B[0m", id,
+                    e);
         }
     }
 

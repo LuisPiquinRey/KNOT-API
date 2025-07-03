@@ -36,7 +36,6 @@ public class RepositoryProductTest {
         testproduct.setName("Adidas samba");
         testproduct.setPrice(120.32);
         testproduct.setStock(5);
-        testproduct.setId_Product(1L);
         testproduct.setAvailable(true);
 
         testcategory=new Category();

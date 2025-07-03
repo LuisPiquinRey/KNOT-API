@@ -33,9 +33,9 @@ public class NoPerishableProduct extends Product implements PrototypeProduct {
             @Length(min = 5, max = 20, message = "{product.length.name}") String name,
             @Positive(message = "{product.positive.price}") double price,
             @Length(min = 5, max = 100, message = "{product.length.description}") String description,
-            @Min(value = 0, message = "{product.min.stock}") Integer stock, Integer version, List<Category> categories,
+            @Min(value = 0, message = "{product.min.stock}") Integer stock, List<Category> categories,
             @Length(min = 5, max = 20, message = "{product.noPerishableProduct.length.warrantyPeriod}") String warrantyPeriod) {
-        super(available, id_Product, name, price, description, stock, version, categories);
+        super(available,name, price, description, stock, categories);
         this.warrantyPeriod = warrantyPeriod;
     }
 
@@ -76,7 +76,6 @@ public class NoPerishableProduct extends Product implements PrototypeProduct {
             this.getPrice(),
             this.getDescription(),
             this.getStock(),
-            this.getVersion(),
             this.getCategories(),
             this.warrantyPeriod
         );

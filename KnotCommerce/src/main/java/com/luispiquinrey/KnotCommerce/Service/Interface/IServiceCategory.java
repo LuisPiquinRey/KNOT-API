@@ -1,15 +1,12 @@
 package com.luispiquinrey.KnotCommerce.Service.Interface;
 
+import java.util.List;
+
 import com.luispiquinrey.KnotCommerce.Entities.Category;
-import com.luispiquinrey.KnotCommerce.Exceptions.CategoryCreationException;
-import com.luispiquinrey.KnotCommerce.Exceptions.CategoryDeleteException;
-import com.luispiquinrey.KnotCommerce.Exceptions.CategoryUpdateException;
 
 import jakarta.persistence.EntityNotFoundException;
 
-public interface IServiceCategory {
-    void createCategory(Category category) throws CategoryCreationException;
-    void deleteCategory(Integer id_Category) throws CategoryDeleteException;
-    void updateCategory(Category category) throws CategoryUpdateException;
+public interface IServiceCategory extends ICrudService<Category, Integer>{
     public Category getCategoryOrThrow(Integer id_Category) throws EntityNotFoundException;
+    List<Category> findAllCategories();
 }

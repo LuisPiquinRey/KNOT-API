@@ -15,7 +15,6 @@ public class PerishableProductFieldMapper implements FieldSetMapper<PerishablePr
     public PerishableProduct mapFieldSet(FieldSet fieldSet) throws BindException {
         PerishableProduct product = new PerishableProduct();
         product.setAvailable(fieldSet.readBoolean("available"));
-        product.setId_Product(fieldSet.readLong("id_Product"));
         product.setName(fieldSet.readString("name"));
         product.setPrice(fieldSet.readDouble("price"));
         product.setDescription(fieldSet.readString("description"));
