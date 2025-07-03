@@ -18,3 +18,5 @@ logging:
         "[org.springframework.amqp.rabbit.core.RabbitAdmin]": DEBUG
 server:
     port: 8060
+    servlet:
+        context-path: /stripe

@@ -46,7 +46,19 @@ management:
     endpoint:
         gateway:
             access: unrestricted
-        
+
+resilience4j:
+    circuitbreaker:
+        configs:
+            default:
+                slidingWindowSize: 10
+                permitted-number-of-calls-in-half-open-state: 2
+                failure-rate-threshold: 50
+                wait-duration-in-open-state: 10000
+        circuit-breaker-aspect-order: 1
+    retry:
+        retry-aspect-order: 2
+
 
 
 

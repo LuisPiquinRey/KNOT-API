@@ -1,4 +1,4 @@
-package com.luispiquinrey.KnotCommerce.Configuration;
+package com.luispiquinrey.KnotCommerce.Configuration.Servlet;
 
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;

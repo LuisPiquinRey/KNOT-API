@@ -33,7 +33,7 @@
             "envFile": "${workspaceFolder}/.env",
             "vmArgs": "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=61794 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=centralizedServerMicroservices",
             "env": {
-                "GIT_PASSWORD": "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"
+                "GIT_PASSWORD": "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"
             }
         },
         {
@@ -82,7 +82,7 @@
             "args": "",
             "envFile": "${workspaceFolder}/.env",
             "env": {
-                "STRIPE_API_KEY": "sk_test_51RWKOKCD4bmQ0obiUv2VzN3T3ebV6GDNhHYqhqQro03aG1yaola30AWAN0zIqXrm7h8QIUDmNZoogNHNviYYKqWn00hnAy3juz"
+                "STRIPE_API_KEY": "sk_test_51QuIkiGdxGtkykunLLIPz3StL0bOJFSlhs86sWvCY2nw7Sn7ljwNm1bIcxeCisKc5E8fLeDff67SiTwgAyMzR4hG00Kc2FhF1I"
             }
         }
     ]

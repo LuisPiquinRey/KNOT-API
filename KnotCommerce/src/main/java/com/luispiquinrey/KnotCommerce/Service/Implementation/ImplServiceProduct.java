@@ -1,8 +1,11 @@
 package com.luispiquinrey.KnotCommerce.Service.Implementation;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,17 +22,20 @@ import com.luispiquinrey.KnotCommerce.Service.Interface.IServiceProduct;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
-import java.util.List;
-
 @Service
 public class ImplServiceProduct implements IServiceProduct {
 
     @Autowired
     private final RepositoryProduct repositoryProduct;
+
+    @Autowired
+    private final CacheManager cacheManager;
+
     private static final Logger logger = LoggerFactory.getLogger(ImplServiceProduct.class);
 
-    public ImplServiceProduct(RepositoryProduct repositoryProduct) {
+    public ImplServiceProduct(RepositoryProduct repositoryProduct,CacheManager cacheManager) {
         this.repositoryProduct = repositoryProduct;
+        this.cacheManager=cacheManager;
     }
 
     @Transactional
@@ -38,10 +44,12 @@ public class ImplServiceProduct implements IServiceProduct {
     public void deleteProductById(Long id_Product) {
         if (repositoryProduct.existsById(id_Product)) {
             repositoryProduct.deleteById(id_Product);
-            logger.info("\u001B[31m🗑️ [PRODUCT DELETED] ➤ Product with ID {} was deleted successfully.\u001B[0m", id_Product);
+            logger.info("\u001B[31m🗑️ [PRODUCT DELETED] ➤ Product with ID {} was deleted successfully.\u001B[0m",
+                    id_Product);
         } else {
             logger.warn("\u001B[33m❌ [DELETE FAILED] ➤ Product with ID {} does not exist.\u001B[0m", id_Product);
-            throw new ProductDeleteException("Error deleting product: Product with ID " + id_Product + " does not exist.", id_Product);
+            throw new ProductDeleteException(
+                    "Error deleting product: Product with ID " + id_Product + " does not exist.", id_Product);
         }
     }
 
@@ -59,15 +67,21 @@ public class ImplServiceProduct implements IServiceProduct {
         }
     }
 
+    /*
+     * ⚠️ WARNING! Remember that product IDs are generated automatically, so you need
+     *  to be careful with this implementation to ensure that Redis caches the ID only
+     *  after the product is created — otherwise, it may cause issues.
+     */
     @Transactional
     @Override
-    @CachePut(value = "products", key = "#product.id_Product")
     public void createProduct(Product product) throws ProductCreationException {
         try {
-            repositoryProduct.save(product);
+            Product saved = repositoryProduct.save(product);
             logger.info("\u001B[32m🎉 [PRODUCT CREATED] ➤ Product created successfully:\n{}\u001B[0m", product);
+            cacheManager.getCache("products").put(saved.getId_Product(), saved);
         } catch (Exception e) {
-            logger.error("\u001B[31m🚨 [CREATE FAILED] ➤ Error creating product with ID {}: {}\u001B[0m", product.getId_Product(), e.getMessage(), e);
+            logger.error("\u001B[31m🚨 [CREATE FAILED] ➤ Error creating product with ID {}: {}\u001B[0m",
+                    product.getId_Product(), e.getMessage(), e);
             throw new ProductCreationException("Error creating product: " + e.getMessage(), product.getId_Product());
         }
     }
@@ -88,10 +102,12 @@ public class ImplServiceProduct implements IServiceProduct {
     public List<Product> findByCategoryName(String categoryName) {
         try {
             List<Product> products = repositoryProduct.findByCategoryName(categoryName);
-            logger.info("\u001B[34m📂 [CATEGORY SEARCH] ➤ Found {} products in category '{}'.\u001B[0m", products.size(), categoryName);
+            logger.info("\u001B[34m📂 [CATEGORY SEARCH] ➤ Found {} products in category '{}'.\u001B[0m",
+                    products.size(), categoryName);
             return products;
         } catch (Exception e) {
-            logger.error("\u001B[31m🚨 [CATEGORY FAILED] ➤ Error retrieving products in category '{}'.\u001B[0m", categoryName, e);
+            logger.error("\u001B[31m🚨 [CATEGORY FAILED] ➤ Error retrieving products in category '{}'.\u001B[0m",
+                    categoryName, e);
             return List.of();
         }
     }
@@ -100,10 +116,13 @@ public class ImplServiceProduct implements IServiceProduct {
     public List<Product> findByPriceRange(double minPrice, double maxPrice) {
         try {
             List<Product> products = repositoryProduct.findByPriceRange(minPrice, maxPrice);
-            logger.info("\u001B[34m💰 [PRICE RANGE] ➤ Found {} products in range [{} - {}].\u001B[0m", products.size(), minPrice, maxPrice);
+            logger.info("\u001B[34m💰 [PRICE RANGE] ➤ Found {} products in range [{} - {}].\u001B[0m", products.size(),
+                    minPrice, maxPrice);
             return products;
         } catch (Exception e) {
-            logger.error("\u001B[31m🚨 [PRICE SEARCH FAILED] ➤ Error retrieving products in price range [{} - {}].\u001B[0m", minPrice, maxPrice, e);
+            logger.error(
+                    "\u001B[31m🚨 [PRICE SEARCH FAILED] ➤ Error retrieving products in price range [{} - {}].\u001B[0m",
+                    minPrice, maxPrice, e);
             return List.of();
         }
     }
@@ -128,22 +147,15 @@ public class ImplServiceProduct implements IServiceProduct {
             repositoryProduct.updateStock(id, stock);
             logger.info("\u001B[35m📦 [STOCK UPDATED] ➤ Product ID {} stock updated to {}.\u001B[0m", id, stock);
         } catch (Exception e) {
-            logger.error("\u001B[31m🚨 [STOCK UPDATE FAILED] ➤ Could not update stock for product ID {}.\u001B[0m", id, e);
+            logger.error("\u001B[31m🚨 [STOCK UPDATE FAILED] ➤ Could not update stock for product ID {}.\u001B[0m", id,e);
         }
     }
 
     @Override
-    @Cacheable(value = "products", key = "#id_Product")
+    @Cacheable(value = "products", key = "#id_Product", unless = "#result == null")
     public Product getProductOrThrow(Long id_Product) throws EntityNotFoundException {
         return repositoryProduct.findById(id_Product)
-            .map(product -> {
-                logger.info("\u001B[32m🔍 [PRODUCT FOUND - DB] ➤ Product with ID {} retrieved successfully.\u001B[0m", id_Product);
-                return product;
-            })
-            .orElseThrow(() -> {
-                logger.warn("\u001B[33m❌ [NOT FOUND] ➤ Product with ID {} was not found.\u001B[0m", id_Product);
-                return new EntityNotFoundException("Product with ID " + id_Product + " not found.");
-            });
+                .orElseThrow(() -> new EntityNotFoundException("Product with ID " + id_Product + " not found."));
     }
 
     @Override
@@ -165,7 +177,8 @@ public class ImplServiceProduct implements IServiceProduct {
             logger.info("\u001B[34m🔍 [EXISTS CHECK] ➤ Product with ID {} existence: {}.\u001B[0m", id_Product, exists);
             return exists;
         } catch (Exception e) {
-            logger.error("\u001B[31m🚨 [EXISTS CHECK FAILED] ➤ Could not check existence for product ID {}.\u001B[0m", id_Product, e);
+            logger.error("\u001B[31m🚨 [EXISTS CHECK FAILED] ➤ Could not check existence for product ID {}.\u001B[0m",
+                    id_Product, e);
             return false;
         }
     }

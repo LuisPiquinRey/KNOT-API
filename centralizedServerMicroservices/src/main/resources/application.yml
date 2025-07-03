@@ -17,6 +17,12 @@ spring:
                     timeout:  5
                     clone-on-start: true
                     force-pull: true
+    rabbitmq:
+        host: localhost
+        port: 5672
+        username: LuisPiquinRey
+        password: Slayer.khamra04killer
+        virtual-host: /
 eureka:
     instance:
         preferIpAddress: true
@@ -38,6 +44,10 @@ logging:
 %clr(%-40.40logger{0}){green}  \
 %clr(:){green}  \
 %clr(%msg){white}%n%wex"
-
+management:
+    endpoints:
+        web:
+            exposure:
+                include: busrefresh
 server:
     port: 8071

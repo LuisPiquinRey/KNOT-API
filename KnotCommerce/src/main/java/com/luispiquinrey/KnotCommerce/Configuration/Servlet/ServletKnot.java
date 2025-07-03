@@ -1,4 +1,4 @@
-package com.luispiquinrey.KnotCommerce.Configuration;
+package com.luispiquinrey.KnotCommerce.Configuration.Servlet;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,5 +24,6 @@ public class ServletKnot extends HttpServlet {
 
         super.init();
     }
+    
 }
 

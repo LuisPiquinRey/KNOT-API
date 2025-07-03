@@ -219,7 +219,10 @@ public abstract class Product implements Serializable{
         this.price = price;
         this.stock = stock;
         this.code_User = code_User;
-    }
+    } 
+
+
+    
 
     public Product(@Length(min = 5, max = 20, message = "{product.length.name}") String name,
             @Positive(message = "{product.positive.price}") double price,

@@ -1,6 +1,7 @@
 package com.luispiquinrey.KnotCommerce.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -41,5 +42,7 @@ public interface RepositoryProduct extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM PerishableProduct p")
     List<PerishableProduct> findAllPerishable();
+
+    Optional<Product> findById(Long id);
 }
 

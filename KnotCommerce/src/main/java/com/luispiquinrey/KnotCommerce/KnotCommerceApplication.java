@@ -1,7 +1,5 @@
 package com.luispiquinrey.KnotCommerce;
 
-import java.util.Arrays;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -15,8 +13,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import com.luispiquinrey.KnotCommerce.Entities.Product.NoPerishableProduct;
-import com.luispiquinrey.KnotCommerce.Entities.Product.Product;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -58,25 +54,6 @@ public class KnotCommerceApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-
-		String[] beans=appContext.getBeanDefinitionNames();
-		Arrays.sort(beans);
-		for(String bean:beans){
-			System.out.println(bean + " of Type ::" + appContext.getBean(bean).getClass());
-		}
-		log.info("Creating test product to generate QR code...");
-
-    	Product product = new NoPerishableProduct();
-    	product.setId_Product(999L);
-    	product.setName("Test QR Product");
-    	product.setPrice(19.99);
-    	product.setDescription("Product for QR code test");
-    	product.setStock(10);
-    	product.setAvailable(true);
-    	product.generateQR();
-
-    	log.info("Test product QR code generated.");
-
-
+		
 	}
 }

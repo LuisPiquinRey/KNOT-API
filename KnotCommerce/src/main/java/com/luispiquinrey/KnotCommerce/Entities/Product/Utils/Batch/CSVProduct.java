@@ -31,7 +31,7 @@ public class CSVProduct {
     public FlatFileItemReader<NoPerishableProduct> noPerishableProductReader() {
         return new FlatFileItemReaderBuilder<NoPerishableProduct>()
             .name("noPerishableProductReader")
-            .resource(new ClassPathResource("CSV/csvNoPerishableProduct/dataNoPerishable.csv"))
+            .resource(new ClassPathResource("CSV/csvNoPerishableProduct/dataNoPerishable.csv/"))
             .delimited()
             .delimiter(",")
             .names(
