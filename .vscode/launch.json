@@ -33,7 +33,7 @@
             "envFile": "${workspaceFolder}/.env",
             "vmArgs": "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=61794 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=centralizedServerMicroservices",
             "env": {
-                "GIT_PASSWORD": "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"
+                "GIT_PASSWORD": "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"
             }
         },
         {
