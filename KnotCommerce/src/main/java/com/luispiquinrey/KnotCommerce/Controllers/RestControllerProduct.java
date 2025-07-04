@@ -27,7 +27,9 @@ import com.luispiquinrey.KnotCommerce.Exceptions.ProductCreationException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductDeleteException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductUpdateException;
 import com.luispiquinrey.KnotCommerce.Service.Facade.FacadeServiceProduct;
+import com.luispiquinrey.KnotCommerce.Service.Interface.AdministrationUsersFeign;
 
+import feign.FeignException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -53,11 +55,15 @@ public class RestControllerProduct {
     @Autowired
     private final MapperProductAndPayment mapperProductAndPayment;
 
+    @Autowired
+    private final AdministrationUsersFeign administrationUsersFeign;
+
     public RestControllerProduct(RabbitMQPublisher rabbitMQPublisher, MapperProductAndPayment mapperProductAndPayment,
-            FacadeServiceProduct facadeServiceProduct) {
+            FacadeServiceProduct facadeServiceProduct, AdministrationUsersFeign administrationUsersFeign) {
         this.rabbitMQPublisher = rabbitMQPublisher;
         this.mapperProductAndPayment = mapperProductAndPayment;
         this.facadeServiceProduct = facadeServiceProduct;
+        this.administrationUsersFeign = administrationUsersFeign;
     }
 
     @PostMapping("/buyProduct/{id}")
@@ -110,18 +116,22 @@ public class RestControllerProduct {
             binding.getAllErrors().forEach(error -> sb.append(error.getDefaultMessage()).append("\n"));
             return ResponseEntity.badRequest().body(sb.toString().trim());
         }
+        Long code = product.getCode_User();
         try {
-            facadeServiceProduct.createTarget(product);
-            ProductPaymentDTO paymentDTO = mapperProductAndPayment.toPaymentDTO(product);
-            paymentDTO.setTactic(Tactic.CREATE_PRODUCT);
-            rabbitMQPublisher.sendMessageStripe(paymentDTO);
-
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(product.toString());
+            if (code != null && administrationUsersFeign.getUserById(code) != null || code == null) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(product.toString());
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("BAD");
+            }
+        } catch (FeignException e) {
+            if (e.status() == 500) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found with ID: " + code);
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error calling user service: " + e.getMessage());
         } catch (ProductCreationException e) {
             logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

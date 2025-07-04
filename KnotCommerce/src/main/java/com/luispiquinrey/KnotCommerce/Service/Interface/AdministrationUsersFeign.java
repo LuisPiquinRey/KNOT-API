@@ -1,12 +1,12 @@
 package com.luispiquinrey.KnotCommerce.Service.Interface;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
-import com.luispiquinrey.common_tools.LoginRequestDTO;
+@FeignClient(name = "MicroservicesUsers", path = "/user")
+public interface AdministrationUsersFeign {
 
-@FeignClient(path="/user/**")
-public class AdministrationUsersFeign {
-    @PostMapping("/login")
-    LoginRequestDTO
+    @GetMapping("/getUser/{id}")
+    String getUserById(@PathVariable Long id);
 }
