@@ -29,6 +29,7 @@ import com.luispiquinrey.KnotCommerce.Enums.Tactic;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductCreationException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductDeleteException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductUpdateException;
+import com.luispiquinrey.KnotCommerce.Service.EmailService;
 import com.luispiquinrey.KnotCommerce.Service.Facade.FacadeServiceProduct;
 import com.luispiquinrey.KnotCommerce.Service.Interface.AdministrationUsersFeign;
 
@@ -61,18 +62,22 @@ public class RestControllerProduct {
     @Autowired
     private final AdministrationUsersFeign administrationUsersFeign;
 
+    @Autowired
+    private final EmailService emailService;
+
     private final ConcurrentHashMap<Long, ReentrantLock> productLocks = new ConcurrentHashMap<>();
 
     public RestControllerProduct(RabbitMQPublisher rabbitMQPublisher, MapperProductAndPayment mapperProductAndPayment,
-            FacadeServiceProduct facadeServiceProduct, AdministrationUsersFeign administrationUsersFeign) {
+            FacadeServiceProduct facadeServiceProduct, AdministrationUsersFeign administrationUsersFeign,EmailService emailService) {
         this.rabbitMQPublisher = rabbitMQPublisher;
         this.mapperProductAndPayment = mapperProductAndPayment;
         this.facadeServiceProduct = facadeServiceProduct;
+        this.emailService=emailService;
         this.administrationUsersFeign = administrationUsersFeign;
     }
 
-    @PostMapping("/buyProduct/{id}")
-    public ResponseEntity<?> buyProduct(@PathVariable Long id) {
+    @PostMapping("/buyProduct/{id}/{email}")
+    public ResponseEntity<?> buyProduct(@PathVariable Long id, @PathVariable String email) {
         ReentrantLock locker = productLocks.computeIfAbsent(id, k -> new ReentrantLock());
         locker.lock();
         try {
@@ -89,6 +94,7 @@ public class RestControllerProduct {
 
             product.setStock(product.getStock() - 1);
             facadeServiceProduct.updateTarget(product);
+            emailService.sendEmail(email, "Verification email", "Testing ");;
 
             ProductPaymentDTO paymentDTO = mapperProductAndPayment.toPaymentDTO(product);
             new Thread(() -> {

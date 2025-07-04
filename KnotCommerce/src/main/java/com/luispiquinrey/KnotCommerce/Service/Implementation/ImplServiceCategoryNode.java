@@ -9,7 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.luispiquinrey.KnotCommerce.DTOs.CategoryNode;
 import com.luispiquinrey.KnotCommerce.Entities.Category;
 import com.luispiquinrey.KnotCommerce.Repository.RepositoryCategoryNode;
-import com.luispiquinrey.KnotCommerce.Service.Interface.ICrudService;
+import com.luispiquinrey.common_tools.Service.ICrudService;
+
 
 @Service
 public class ImplServiceCategoryNode implements ICrudService<Category, Integer> {

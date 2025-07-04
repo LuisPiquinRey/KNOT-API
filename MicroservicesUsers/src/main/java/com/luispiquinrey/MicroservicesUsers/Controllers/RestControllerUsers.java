@@ -25,7 +25,7 @@ import com.luispiquinrey.MicroservicesUsers.Entities.User;
 import com.luispiquinrey.MicroservicesUsers.Exceptions.UserCreateException;
 import com.luispiquinrey.MicroservicesUsers.Exceptions.UserDeleteException;
 import com.luispiquinrey.MicroservicesUsers.Exceptions.UserUpdateException;
-import com.luispiquinrey.MicroservicesUsers.Service.IServiceUser;
+import com.luispiquinrey.MicroservicesUsers.Service.Interface.IServiceUser;
 import com.luispiquinrey.MicroservicesUsers.Utils.JWTManager;
 import com.luispiquinrey.common_tools.JwtResponseDTO;
 import com.luispiquinrey.common_tools.LoginRequestDTO;
@@ -87,7 +87,7 @@ public class RestControllerUsers {
     @PostMapping("/signIn")
     public ResponseEntity<?> signIn(@RequestBody User user){
         try{
-            iServiceUser.createUser(user);
+            iServiceUser.createTarget(user);
             return ResponseEntity.status(HttpStatus.CREATED)
                 .body("User created successfully!");
         }catch(UserCreateException e){
@@ -118,7 +118,7 @@ public class RestControllerUsers {
     @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id){
         try{
-            iServiceUser.deleteUserById(id);
+            iServiceUser.deleteTargetById(id);
             return ResponseEntity.status(HttpStatus.OK)
                 .body("Product with the id: " + id + " correctly deleted");
         }catch(UserDeleteException e){
@@ -129,7 +129,7 @@ public class RestControllerUsers {
     @PutMapping("/updateUser")
     public ResponseEntity<?> updateUser(@RequestBody User user){
         try{
-            iServiceUser.updateUser(user);
+            iServiceUser.updateTarget(user);
             return ResponseEntity.status(HttpStatus.OK)
                 .body("User with id: " + user.getId_user() + "correctly updated");
         }catch(UserUpdateException e){

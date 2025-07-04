@@ -1,4 +1,4 @@
-package com.luispiquinrey.KnotCommerce.Service.Interface;
+package com.luispiquinrey.common_tools.Service;
 
 public interface ICrudService<T,V> {
     void deleteTargetById(V id_obj) throws RuntimeException;

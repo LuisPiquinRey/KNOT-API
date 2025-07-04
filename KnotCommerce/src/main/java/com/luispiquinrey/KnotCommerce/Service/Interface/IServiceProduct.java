@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.luispiquinrey.KnotCommerce.Entities.Category;
 import com.luispiquinrey.KnotCommerce.Entities.Product.Product;
+import com.luispiquinrey.common_tools.Service.ICrudService;
 
 import jakarta.persistence.EntityNotFoundException;
 

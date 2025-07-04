@@ -84,7 +84,7 @@ public class FacadeServiceProduct implements IServiceProduct {
     }
 
     @Override
-    @CachePut(value = "product", key = "#id_Product")
+    @CachePut(value = "product", key = "#id",unless="#result==null")
     public void updateStock(Long id, int stock) {
         implServiceProduct.updateStock(id, stock);
     }

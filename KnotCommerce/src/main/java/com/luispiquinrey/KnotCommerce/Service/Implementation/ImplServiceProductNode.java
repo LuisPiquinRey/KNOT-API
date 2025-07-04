@@ -16,7 +16,8 @@ import com.luispiquinrey.KnotCommerce.Exceptions.ProductNodeCreationException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductNodeDeleteException;
 import com.luispiquinrey.KnotCommerce.Exceptions.ProductNodeUpdateException;
 import com.luispiquinrey.KnotCommerce.Repository.RepositoryProductNode;
-import com.luispiquinrey.KnotCommerce.Service.Interface.ICrudService;
+import com.luispiquinrey.common_tools.Service.ICrudService;
+
 
 
 @Service

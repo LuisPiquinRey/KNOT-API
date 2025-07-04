@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 import com.luispiquinrey.KnotCommerce.Entities.Category;
 import com.luispiquinrey.KnotCommerce.Service.Implementation.ImplServiceCategory;
 import com.luispiquinrey.KnotCommerce.Service.Implementation.ImplServiceCategoryNode;
-import com.luispiquinrey.KnotCommerce.Service.Interface.ICrudService;
+import com.luispiquinrey.common_tools.Service.ICrudService;
+
 
 @Service
 public class FacadeServiceCategory implements ICrudService<Category, Integer> {

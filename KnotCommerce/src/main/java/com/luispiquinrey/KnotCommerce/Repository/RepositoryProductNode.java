@@ -5,8 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import com.luispiquinrey.KnotCommerce.DTOs.ProductNode;
 
-
-
 @Repository
 public interface RepositoryProductNode extends Neo4jRepository<ProductNode, Long>{
 }
