@@ -95,6 +95,11 @@
             <groupId>org.neo4j.driver</groupId>
             <artifactId>neo4j-java-driver</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.luispiquinrey</groupId>
+            <artifactId>tools-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- Cloud Config -->
         <dependency>
@@ -125,6 +130,11 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
         <!-- Test -->

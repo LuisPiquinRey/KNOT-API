@@ -9,6 +9,7 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -25,6 +26,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 @EnableAsync
 @EnableCaching
 @EnableRabbit
+@EnableFeignClients
 @OpenAPIDefinition(
 	info=@Info(
 		title="Product microservice REST API Documentation",

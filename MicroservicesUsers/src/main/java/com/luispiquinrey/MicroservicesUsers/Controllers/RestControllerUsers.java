@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.luispiquinrey.MicroservicesUsers.Configuration.Security.CustomServiceUser;
-import com.luispiquinrey.MicroservicesUsers.DTOs.JwtResponseDTO;
-import com.luispiquinrey.MicroservicesUsers.DTOs.LoginRequestDTO;
 import com.luispiquinrey.MicroservicesUsers.Entities.User;
 import com.luispiquinrey.MicroservicesUsers.Exceptions.UserCreateException;
 import com.luispiquinrey.MicroservicesUsers.Exceptions.UserDeleteException;
 import com.luispiquinrey.MicroservicesUsers.Exceptions.UserUpdateException;
 import com.luispiquinrey.MicroservicesUsers.Service.IServiceUser;
 import com.luispiquinrey.MicroservicesUsers.Utils.JWTManager;
+import com.luispiquinrey.common_tools.JwtResponseDTO;
+import com.luispiquinrey.common_tools.LoginRequestDTO;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -53,8 +53,8 @@ public class RestControllerUsers {
         this.authenticationManager=authenticationManager;
         this.customServiceUser=customServiceUser;
     }
-    @PostMapping("/signIn")
-    public ResponseEntity<?> signIn(@RequestBody LoginRequestDTO loginRequest){
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest){
         try{
             Authentication authentication=authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -84,8 +84,8 @@ public class RestControllerUsers {
         }
     }
 
-    @PostMapping("/createUser")
-    public ResponseEntity<?> createUser(@RequestBody User user){
+    @PostMapping("/signIn")
+    public ResponseEntity<?> signIn(@RequestBody User user){
         try{
             iServiceUser.createUser(user);
             return ResponseEntity.status(HttpStatus.CREATED)
