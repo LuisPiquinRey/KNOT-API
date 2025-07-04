@@ -1,5 +1,8 @@
 package com.luispiquinrey.KnotCommerce.Controllers;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +61,8 @@ public class RestControllerProduct {
     @Autowired
     private final AdministrationUsersFeign administrationUsersFeign;
 
+    private final ConcurrentHashMap<Long, ReentrantLock> productLocks = new ConcurrentHashMap<>();
+
     public RestControllerProduct(RabbitMQPublisher rabbitMQPublisher, MapperProductAndPayment mapperProductAndPayment,
             FacadeServiceProduct facadeServiceProduct, AdministrationUsersFeign administrationUsersFeign) {
         this.rabbitMQPublisher = rabbitMQPublisher;
@@ -68,6 +73,8 @@ public class RestControllerProduct {
 
     @PostMapping("/buyProduct/{id}")
     public ResponseEntity<?> buyProduct(@PathVariable Long id) {
+        ReentrantLock locker = productLocks.computeIfAbsent(id, k -> new ReentrantLock());
+        locker.lock();
         try {
             if (!facadeServiceProduct.existsById(id)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -81,12 +88,18 @@ public class RestControllerProduct {
             }
 
             product.setStock(product.getStock() - 1);
+            facadeServiceProduct.updateTarget(product);
 
             ProductPaymentDTO paymentDTO = mapperProductAndPayment.toPaymentDTO(product);
-            paymentDTO.setTactic(Tactic.UPDATE_PRODUCT);
-            rabbitMQPublisher.sendMessageStripe(paymentDTO);
-
-            facadeServiceProduct.updateTarget(product);
+            new Thread(() -> {
+                try {
+                    rabbitMQPublisher.sendMessageStripe(paymentDTO);
+                    paymentDTO.setTactic(Tactic.UPDATE_PRODUCT);
+                    rabbitMQPublisher.sendMessageStripe(paymentDTO);
+                } catch (Exception ex) {
+                    logger.error("Error in RabbitMQ thread: " + ex.getMessage());
+                }
+            }).start();
 
             return ResponseEntity
                     .ok("Product with id " + id + " purchased successfully. Remaining stock: " + product.getStock());
@@ -103,6 +116,8 @@ public class RestControllerProduct {
             logger.error("Unexpected error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Unexpected error occurred: " + e.getMessage());
+        } finally {
+            locker.unlock();
         }
     }
 
@@ -119,6 +134,19 @@ public class RestControllerProduct {
         Long code = product.getCode_User();
         try {
             if (code != null && administrationUsersFeign.getUserById(code) != null || code == null) {
+                ProductPaymentDTO paymentDTO = mapperProductAndPayment.toPaymentDTO(product);
+                paymentDTO.setTactic(Tactic.CREATE_PRODUCT);
+
+                facadeServiceProduct.createTarget(product);
+
+                new Thread(() -> {
+                    try {
+                        rabbitMQPublisher.sendMessageStripe(paymentDTO);
+                    } catch (Exception ex) {
+                        logger.error("Error sending message to RabbitMQ: " + ex.getMessage());
+                    }
+                }).start();
+
                 return ResponseEntity.status(HttpStatus.CREATED).body(product.toString());
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("BAD");
@@ -136,7 +164,7 @@ public class RestControllerProduct {
     }
 
     @Operation(summary = "Delete product", description = "Endpoint to delete a product by ID", method = "DELETE", parameters = {
-            @Parameter(name = "id", description = "ID of the product to delete", required = true)
+        @Parameter(name = "id", description = "ID of the product to delete", required = true)
     })
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     @DeleteMapping("/deleteProduct/{id}")
@@ -145,11 +173,24 @@ public class RestControllerProduct {
             Product productToBeDeleted = facadeServiceProduct.getProductOrThrow(id);
             logger.error(productToBeDeleted + " ");
 
-            ProductPaymentDTO paymentDTO = mapperProductAndPayment.toPaymentDTO(productToBeDeleted);
-            paymentDTO.setTactic(Tactic.DELETE_PRODUCT);
-            rabbitMQPublisher.sendMessageStripe(paymentDTO);
+            new Thread(() -> {
+                try {
+                    ProductPaymentDTO paymentDTO = mapperProductAndPayment.toPaymentDTO(productToBeDeleted);
+                    paymentDTO.setTactic(Tactic.DELETE_PRODUCT);
+                    rabbitMQPublisher.sendMessageStripe(paymentDTO);
 
-            facadeServiceProduct.deleteTargetById(id);
+                } catch (Exception e) {
+                    logger.error("Error sending message to RabbitMQ: " + e.getMessage());
+                }
+            }).start();
+
+            new Thread(() -> {
+                try {
+                    facadeServiceProduct.deleteTargetById(id);
+                } catch (Exception ex) {
+                    logger.error("Error deleting product: " + ex.getMessage());
+                }
+            }).start();
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Product with the id: " + id + " correctly deleted");
         } catch (ProductDeleteException | EntityNotFoundException e) {
@@ -164,12 +205,23 @@ public class RestControllerProduct {
     @PutMapping("/updateProduct")
     public ResponseEntity<?> updateProduct(@RequestBody Product product) {
         try {
-            facadeServiceProduct.updateTarget(product);
+            new Thread(() -> {
+                try {
+                    ProductPaymentDTO paymentDTO = mapperProductAndPayment.toPaymentDTO(product);
+                    paymentDTO.setTactic(Tactic.UPDATE_PRODUCT);
+                    rabbitMQPublisher.sendMessageStripe(paymentDTO);
 
-            ProductPaymentDTO paymentDTO = mapperProductAndPayment.toPaymentDTO(product);
-            paymentDTO.setTactic(Tactic.UPDATE_PRODUCT);
-            rabbitMQPublisher.sendMessageStripe(paymentDTO);
-
+                } catch (Exception e) {
+                    logger.error("Error sending message to RabbitMQ: " + e.getMessage());
+                }
+            }).start();
+            new Thread(()->{
+                try{
+                    facadeServiceProduct.updateTarget(product);
+                }catch(Exception e){
+                    logger.error("Error updating product: " + e.getMessage());
+                }
+            }).start();
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Product with id: " + product.getId_Product() + " correctly updated");
         } catch (ProductUpdateException e) {
@@ -180,7 +232,7 @@ public class RestControllerProduct {
     }
 
     @Operation(summary = "Get product by ID", description = "Endpoint to retrieve product details by ID", method = "GET", parameters = {
-            @Parameter(name = "id", description = "ID of the product to delete", required = true)
+        @Parameter(name = "id", description = "ID of the product to delete", required = true)
     })
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     @GetMapping("/getProductById/{id_Product}")
@@ -221,7 +273,7 @@ public class RestControllerProduct {
     }
 
     @Operation(summary = "List products by category", description = "Endpoint to retrieve products based on category name", method = "GET", parameters = {
-            @Parameter(name = "categoryName", description = "Category to find the products", required = true)
+        @Parameter(name = "categoryName", description = "Category to find the products", required = true)
     })
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     @GetMapping("/productsByCategory/{categoryName}")
@@ -236,8 +288,8 @@ public class RestControllerProduct {
     }
 
     @Operation(summary = "List products by price range", description = "Endpoint to retrieve products within a price range", method = "GET", parameters = {
-            @Parameter(name = "minPrice", description = "The min price of the range"),
-            @Parameter(name = "maxPrice", description = "The max price of the range")
+        @Parameter(name = "minPrice", description = "The min price of the range"),
+        @Parameter(name = "maxPrice", description = "The max price of the range")
     })
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     @GetMapping("/productsByPriceRange")
@@ -268,8 +320,8 @@ public class RestControllerProduct {
     }
 
     @Operation(summary = "Update product stock", description = "Endpoint to update the stock quantity of a product", method = "PUT", parameters = {
-            @Parameter(name = "id", description = "Id to update the Stock"),
-            @Parameter(name = "stock", description = "Stock of the product to update")
+        @Parameter(name = "id", description = "Id to update the Stock"),
+        @Parameter(name = "stock", description = "Stock of the product to update")
     })
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     @PutMapping("/updateStock/{id}")
