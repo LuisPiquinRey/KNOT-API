@@ -1,6 +1,5 @@
 import '../css/Login.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEyeSlash, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
@@ -9,12 +8,12 @@ import { useAuth } from './AuthContext';
 
 export function Login() {
     const [token, setToken] = useState('');
-    const [role, setRole] = useState('');
     const { login }=useAuth();
     const [dataUser, setDataUser] = useState({
         username: '',
         password: ''
     });
+    const[eyeActive,setEyeActive]=useState(false);
 
     const handleChange = (event) => {
         setDataUser({
@@ -40,52 +39,31 @@ export function Login() {
                 alert('Error with token jwt');
             });
     };
-
+    const handlerEye = () => {
+        setEyeActive(!eyeActive); 
+    }
     return (
-        <div className='blocklogin'>
-            <h1 id='titlelogin'>Login</h1>
-            <div id='contentlogin' className='blocklogin'>
-                <div className='circle'></div>
-                <div className='circle'></div>
-                <div id='icon-user'>
-                    <FontAwesomeIcon icon={faUser} id='icon' />
-                </div>
-                <form id='formlogin' onSubmit={handleSubmit}>
-                    <input
-                        className='inputlogin'
-                        type='text'
-                        placeholder='Username'
-                        required
-                        onChange={handleChange}
-                        value={dataUser.username}
-                        name='username'
-                    />
-                    <div className='input-group'>
-                        <input
-                            className='inputlogin'
-                            type='password'
-                            placeholder='Password'
-                            required
-                            onChange={handleChange}
-                            value={dataUser.password}
-                            name='password'
-                        />
-                        <FontAwesomeIcon icon={faEyeSlash} id='icon-password' />
-                    </div>
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                        width: '100%',
-                        alignItems: 'center',
-                        position: 'relative',
-                        top: '-15px'
-                    }}>
-                        <h3>Forget password?</h3>
-                        <input  className={token !== '' ? 'submitlogin token-true' : 'submitlogin token-false'}  type='submit' value='Submit' />
-                    </div>
-                    <div className='circle bubble-login'></div>
-                </form>
+        <>
+            <div className='header-block'>
+                <img id='icon-knot-superior' src='public/resources/Knot_icon_text.png'/>
             </div>
-        </div>
+            <div className='block-body'>
+                <div className='sign-in-block'>
+                    <img id='icon-knot' src='public/resources/Knot_icon.png' alt='Knot icon'/>
+                    <h1 id='title'>Sign in</h1>
+                    <form onSubmit={handleSubmit}>
+                        <input type='text' className='input-knot style-knot' placeholder='Username' onChange={handleChange}/>
+                        <div className='input-group-knot'>
+                            <input required type={eyeActive ? 'text' : 'password'}  className='input-knot style-knot' placeholder='Password' onChange={handleChange}/>
+                            <img id='eye-icon' src={eyeActive ? 'public/resources/visibility-on.svg' : 'public/resources/visibility-off.svg'}  onClick={handlerEye}/>
+                        </div>
+                        <input type='submit' required className='input-knot style-knot' id='submit-knot' value='Sign in'/>
+                    </form>
+                    <a href="#" className='forgot-password'>Forgot your password?</a>
+                    <a href="#" id='account-text-knot'>Don´t have a account?</a>
+                    <button className='button-knot style-knot'>Create new account</button>
+                </div>
+            </div>
+        </>
     );
 }
