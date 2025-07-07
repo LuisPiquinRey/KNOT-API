@@ -9,13 +9,16 @@
     display: block;
     background-color: white;
     outline: 2px solid var(--grey-knot);
+    transition: all 0.7s ease;
 }
 .input-knot::placeholder{
     color: var(--grey-knot-dark);
+    transition: all 0.7s ease;
     opacity: 0.3;
 }
 .input-knot:focus {
     background-color: transparent;
+    transition: all 0.7s ease;
     box-shadow: 0 0 0 3px rgba(75, 146, 252, 0.1);
 }
 .style-knot{
@@ -143,6 +146,7 @@ a:hover::after {
     letter-spacing: -0.5px;
     margin: 0;
     font-size: 1.7em;
+    color: black;
 }
 #icon-knot{
     width: 150px;

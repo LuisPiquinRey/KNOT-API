@@ -5,6 +5,7 @@ import HomePage from './HomePage';
 import { Login } from './Login';
 import UnauthorizedPage from './UnauthorizedPage';
 import AdminPage from './AdminPage';
+import NotFoundPage from './404Page'
 
 import ProtectedRoute from './ProtectedRoute';
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
                         </ProtectedRoute>
                     } 
                 />
+                <Route path="*" element={<NotFoundPage />}/>
             </Routes>
         </Router>
     );

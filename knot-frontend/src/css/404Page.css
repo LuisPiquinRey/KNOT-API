@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+:root {
+    --grey-knot:  rgb(213, 217, 217);
+    --grey-knot-dark:rgb(157, 157, 157);
+}
+h1,h2,h3,h4{
+    font-family: 'Inter', sans-serif;
+    color: rgb(153, 147, 147);
+    
+}
+.block-body-404 {
+    background: white;
+    border-radius: 30px;
+    padding: 40px;
+    width: 60%;
+    height: 60%;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+    backdrop-filter: blur(20px);
+    box-shadow: 5px 5px 3px 1px rgb(147, 146, 146);
+}
+.navbar-item{
+    color: black;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+}
+.navbar-item:nth-last-child(2) { /* Login - penúltimo elemento */
+    margin-left: 300px;
+}
+#navbar-item-signup {
+    background-color: var(--grey-knot);
+    padding: 12px 20px;
+    border-radius: 25px;
+    margin-right: 40px;
+    transition: all 0.3s ease;
+}
+.navbar-left img,
+.navbar-left .navbar-item {
+    margin:0px;
+}
+#not-found-title{
+    font-size: 200px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+    background-image: url('/resources/Knot_icon_pattern.png');
+    background-size: 260px;
+    background-position: 10px;
+    opacity: 0.6;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    background-color: var(--grey-knot);
+}
+#nav-knot{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 20px;
+}
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.main-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 20px 20px;
+    height: 100vh;
+    margin: 10px;
+    background: linear-gradient(135deg, var(--grey-knot) 0%, #dddfdf 100%);
+    border-radius: 20px;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.not-found-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+.button_404{
+    border: none;
+    border-radius: 30px;
+    height: 50px;
+    width:200px;
+    margin: 10px;
+}
+.footer-404 {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    padding: 30px;
+    text-align: center;
+    border-top: 1px solid rgba(213, 217, 217, 0.3);
+    margin-top: auto;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto; 
+    overflow-x: hidden; 
+}
