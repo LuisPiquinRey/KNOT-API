@@ -72,7 +72,7 @@ public class RestControllerUsers {
                 .badRequest().body(e.getMessage());
         }
     }
-    @PostMapping
+    @PostMapping("/refreshtoken")
     public ResponseEntity<?> refreshToken(@RequestBody JwtResponseDTO request){
         String refreshToken=request.getAccessTokenJwt();
         if(jwtManager.verifyTokenJwt(refreshToken)){

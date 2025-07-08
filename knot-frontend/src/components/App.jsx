@@ -8,23 +8,26 @@ import AdminPage from './AdminPage';
 import NotFoundPage from './404Page'
 
 import ProtectedRoute from './ProtectedRoute';
+import { AuthProvider } from './AuthContext';
 export default function App() {
     return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/unauthorized" element={<UnauthorizedPage />} />
-                <Route 
-                    path="/admin" 
-                    element={
-                        <ProtectedRoute allowedRoles={['ADMIN', 'SUPER_ADMIN']}>
-                            <AdminPage />
-                        </ProtectedRoute>
-                    } 
-                />
-                <Route path="*" element={<NotFoundPage />}/>
-            </Routes>
-        </Router>
+        <AuthProvider>
+            <Router>
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/unauthorized" element={<UnauthorizedPage />} />
+                    <Route 
+                        path="/admin" 
+                        element={
+                            <ProtectedRoute allowedRoles={['ADMIN', 'SUPER_ADMIN']}>
+                                <AdminPage />
+                            </ProtectedRoute>
+                        } 
+                    />
+                    <Route path="*" element={<NotFoundPage />}/>
+                </Routes>
+            </Router>
+        </AuthProvider>
     );
 }

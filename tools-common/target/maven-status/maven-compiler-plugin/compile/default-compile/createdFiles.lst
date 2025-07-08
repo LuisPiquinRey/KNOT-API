@@ -1,0 +1,3 @@
+com\luispiquinrey\common_tools\Service\ICrudService.class
+com\luispiquinrey\common_tools\JwtResponseDTO.class
+com\luispiquinrey\common_tools\LoginRequestDTO.class
