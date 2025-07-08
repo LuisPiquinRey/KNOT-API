@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+
+:root {
+    --grey-knot:  rgb(213, 217, 217);
+    --grey-knot-dark:rgb(157, 157, 157);
+    --submit-blue: rgb(0, 98, 255);
+}
+a {
+    margin: 5px;
+    text-decoration: none;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -3px;
+    left: 50%;
+    background: rgb(174, 170, 170);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+a:hover {
+    transform: translateY(-1px);
+}
+a:hover::after {
+    width: 100%;
+}
+*{
+    font-family: 'Roboto';
+}
+body{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    overflow-x: hidden
+}

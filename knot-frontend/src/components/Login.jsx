@@ -1,4 +1,5 @@
 import '../css/Login.css'
+import '../css/Common.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import axios from 'axios';
@@ -65,7 +66,7 @@ export function Login() {
                             <input required type={eyeActive ? 'text' : 'password'}  className='input-knot style-knot' placeholder='Password' name='password' value={dataUser.password}   onChange={handleChange}/>
                             <img id='eye-icon' src={eyeActive ? 'public/resources/visibility-on.svg' : 'public/resources/visibility-off.svg'}  onClick={handlerEye}/>
                         </div>
-                        <input type='submit' required className='input-knot style-knot' id='submit-knot' value='Sign in'/>
+                        <input type='submit' required className='input-knot style-knot submit-knot' value='Sign in'/>
                     </form>
                     <a href="#" className='forgot-password'>Forgot your password?</a>
                     <a href="#" id='account-text-knot'>Don´t have a account?</a>

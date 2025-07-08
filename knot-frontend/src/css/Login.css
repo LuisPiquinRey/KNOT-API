@@ -1,10 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
-:root {
-    --submit-blue: #4b92fc;
-    --grey-knot:  rgb(235, 239, 239);
-    -grey-knot-dark:rgb(157, 157, 157);
-}
 .input-knot{
     display: block;
     background-color: white;
@@ -29,35 +22,13 @@
     width: 250px;
     font-family: 'Inter', sans-serif;
 }
-a {
-    margin: 5px;
-    text-decoration: none;
-    position: relative;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -3px;
-    left: 50%;
-    background: rgb(174, 170, 170);
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
-}
-a:hover {
-    transform: translateY(-1px);
-}
-a:hover::after {
-    width: 100%;
-}
 .input-group-knot {
     display: flex;
     align-items: center;
     justify-content: space-between;
     position: relative;
 }
+
 .sign-in-block {
     display: flex;
     align-items: center; 
@@ -158,7 +129,7 @@ a:hover::after {
     height: auto;
     transition: transform 0.3s ease;
 }
-#submit-knot{
+.submit-knot{
     background-color: var(--submit-blue);
     color: white;
     font-family: 'Inter', sans-serif;

@@ -1,13 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-:root {
-    --grey-knot:  rgb(213, 217, 217);
-    --grey-knot-dark:rgb(157, 157, 157);
-}
-h1,h2,h3,h4{
-    font-family: 'Inter', sans-serif;
-    color: rgb(153, 147, 147);
-    
-}
 .block-body-404 {
     background: white;
     border-radius: 30px;
@@ -103,12 +93,4 @@ h1,h2,h3,h4{
     text-align: center;
     border-top: 1px solid rgba(213, 217, 217, 0.3);
     margin-top: auto;
-}
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    max-height: 100vh;
-    overflow-y: auto; 
-    overflow-x: hidden; 
 }

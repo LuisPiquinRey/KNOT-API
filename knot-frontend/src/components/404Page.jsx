@@ -1,4 +1,5 @@
 import '../css/404Page.css'
+import '../css/Common.css'
 export default function UnauthorizedPage() {
     return (
     <>

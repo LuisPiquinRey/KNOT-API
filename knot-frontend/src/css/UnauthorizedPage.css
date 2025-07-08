@@ -1,0 +1,42 @@
+.block-unauthorized{
+    height: 400px;
+    width: 400px;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    background-color: white;
+    z-index: 2;
+}
+.black-icon{
+    width: 100px;
+    height: 100px;
+}
+.unauthorized-page-wrapper {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    overflow: hidden;
+    background-color: rgb(223, 224, 225);
+    position: relative;
+}
+.unauthorized-page-wrapper::after{
+    content: ''; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/resources/Knot_icon.png');
+    background-repeat: repeat; 
+    background-size: 100px 100px; 
+    opacity: 0.1;
+    z-index: 1; 
+    pointer-events: none;
+}
