@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class JwtTokenFilter extends OncePerRequestFilter{
+public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private JWTManager jwtManager;
@@ -30,12 +30,12 @@ public class JwtTokenFilter extends OncePerRequestFilter{
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            String jwt=jwtManager.getJwtFromHeader(request);
-            String username=jwtManager.getUsernameFromJWT(jwt);
-            if (jwtManager.verifyTokenJwt(jwt)){
-                UserDetails userDetails=customServiceUser.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication=
-                    new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+            String jwt = jwtManager.getJwtFromHeader(request);
+            String username = jwtManager.getUsernameFromJWT(jwt);
+            if (jwtManager.verifyTokenJwt(jwt)) {
+                UserDetails userDetails = customServiceUser.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (IllegalAccessException e) {
@@ -47,7 +47,9 @@ public class JwtTokenFilter extends OncePerRequestFilter{
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        return path.startsWith("/user/login");
+        return path.startsWith("/login") ||
+                path.startsWith("/oauth2/") || 
+                path.startsWith("/login/oauth2/")
+                || path.startsWith("/user/");
     }
-    
 }

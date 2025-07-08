@@ -50,7 +50,10 @@ export function Login() {
     };
     const handlerEye = () => {
         setEyeActive(!eyeActive); 
-    }
+    };
+    const handleGoogleLogin = () => {
+        window.location.href = 'https://accounts.google.com/o/oauth2/auth';
+    };
     return (
         <>
             <div className='header-block'>
@@ -71,6 +74,7 @@ export function Login() {
                     <a href="#" className='forgot-password'>Forgot your password?</a>
                     <a href="#" id='account-text-knot'>Don´t have a account?</a>
                     <button className='button-knot style-knot'>Create new account</button>
+                    <button className='button-knot style-knot' onClick={handleGoogleLogin}>Google</button>
                 </div>
             </div>
         </>
