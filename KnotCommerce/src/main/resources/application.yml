@@ -3,3 +3,8 @@ spring:
         name: KnotCommerce
     config:
         import: configserver:http://localhost:8071/
+    servlet:
+        multipart:
+            max-file-size: 10MB
+            max-request-size: 10MB
+            enabled: true

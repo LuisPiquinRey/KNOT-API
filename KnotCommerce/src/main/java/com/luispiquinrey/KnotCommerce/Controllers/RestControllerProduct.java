@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.luispiquinrey.KnotCommerce.Configuration.RabbitAMQP.RabbitMQPublisher;
@@ -71,11 +73,12 @@ public class RestControllerProduct {
     private final ConcurrentHashMap<Long, ReentrantLock> productLocks = new ConcurrentHashMap<>();
 
     public RestControllerProduct(RabbitMQPublisher rabbitMQPublisher, MapperProductAndPayment mapperProductAndPayment,
-            FacadeServiceProduct facadeServiceProduct, AdministrationUsersFeign administrationUsersFeign,EmailService emailService) {
+            FacadeServiceProduct facadeServiceProduct, AdministrationUsersFeign administrationUsersFeign,
+            EmailService emailService) {
         this.rabbitMQPublisher = rabbitMQPublisher;
         this.mapperProductAndPayment = mapperProductAndPayment;
         this.facadeServiceProduct = facadeServiceProduct;
-        this.emailService=emailService;
+        this.emailService = emailService;
         this.administrationUsersFeign = administrationUsersFeign;
     }
 
@@ -97,7 +100,8 @@ public class RestControllerProduct {
 
             product.setStock(product.getStock() - 1);
             facadeServiceProduct.updateTarget(product);
-            emailService.sendEmail(email, "Verification email", "Testing ");;
+            emailService.sendEmail(email, "Verification email", "Testing ");
+            ;
 
             ProductPaymentDTO paymentDTO = mapperProductAndPayment.toPaymentDTO(product);
             new Thread(() -> {
@@ -133,7 +137,8 @@ public class RestControllerProduct {
     @Operation(summary = "Create products", description = "Endpoint to create new products", method = "POST", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Product object to be created", required = true))
     @ApiResponse(responseCode = "201", description = "HTTP Status CREATED")
     @PostMapping("/createProduct")
-    public ResponseEntity<?> createProduct(@Valid @RequestBody Product product, BindingResult binding)
+    public ResponseEntity<?> createProduct(@Valid @RequestPart Product product,
+            @RequestPart MultipartFile file, BindingResult binding)
             throws Exception {
         if (binding.hasErrors()) {
             StringBuilder sb = new StringBuilder();
@@ -145,7 +150,15 @@ public class RestControllerProduct {
             if (code != null && administrationUsersFeign.getUserById(code) != null || code == null) {
                 ProductPaymentDTO paymentDTO = mapperProductAndPayment.toPaymentDTO(product);
                 paymentDTO.setTactic(Tactic.CREATE_PRODUCT);
-
+                if (file != null && !file.isEmpty()) {
+                    if (file.getSize() > 10 * 1024 * 1024) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("BAD");
+                    } else {
+                        product.setImageName(file.getOriginalFilename());
+                        product.setImageType(file.getContentType());
+                        product.setImageContent(file.getBytes());
+                    }
+                }
                 facadeServiceProduct.createTarget(product);
 
                 new Thread(() -> {
@@ -208,35 +221,69 @@ public class RestControllerProduct {
                     .body(e.getMessage());
         }
     }
-
-    @Operation(summary = "Update product", description = "Endpoint to update an existing product", method = "CREATE", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Product object to be created", required = true))
+    @Operation(summary = "Update product", description = "Endpoint to update an existing product", method = "PUT")
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     @PutMapping("/updateProduct")
-    public ResponseEntity<?> updateProduct(@RequestBody Product product) {
+    public ResponseEntity<?> updateProduct(
+            @Valid @RequestPart("product") Product product,
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            BindingResult binding) {
+        if (binding.hasErrors()) {
+            StringBuilder sb = new StringBuilder();
+            binding.getAllErrors().forEach(error -> sb.append(error.getDefaultMessage()).append("\n"));
+            return ResponseEntity.badRequest().body(sb.toString().trim());
+        }
+        if (product.getId_Product() == null) {
+            return ResponseEntity.badRequest().body("Product ID is required for update");
+        }
+
+        if (!facadeServiceProduct.existsById(product.getId_Product())) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Product with ID " + product.getId_Product() + " not found");
+        }
+
         try {
+            if (file != null && !file.isEmpty()) {
+                if (file.getSize() > 10 * 1024 * 1024) {
+                    return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                            .body("Image file size cannot exceed 10MB");
+                }
+
+                String contentType = file.getContentType();
+                if (contentType == null || !contentType.startsWith("image/")) {
+                    return ResponseEntity.badRequest()
+                            .body("Only image files are allowed");
+                }
+                product.setImageName(file.getOriginalFilename());
+                product.setImageType(contentType);
+                product.setImageContent(file.getBytes());
+
+                logger.info("📷 [IMAGE UPDATED] ➤ New image for product ID: {}", product.getId_Product());
+            }
+            facadeServiceProduct.updateTarget(product);
+
             new Thread(() -> {
                 try {
                     ProductPaymentDTO paymentDTO = mapperProductAndPayment.toPaymentDTO(product);
                     paymentDTO.setTactic(Tactic.UPDATE_PRODUCT);
                     rabbitMQPublisher.sendMessageStripe(paymentDTO);
-
+                    logger.info("💰 [PAYMENT SENT] ➤ Update notification sent for product ID: {}", product.getId_Product());
                 } catch (Exception e) {
-                    logger.error("Error sending message to RabbitMQ: " + e.getMessage());
+                    logger.error("❌ [PAYMENT FAILED] ➤ Error sending RabbitMQ message for product {}: {}",
+                            product.getId_Product(), e.getMessage());
                 }
             }).start();
-            new Thread(()->{
-                try{
-                    facadeServiceProduct.updateTarget(product);
-                }catch(Exception e){
-                    logger.error("Error updating product: " + e.getMessage());
-                }
-            }).start();
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body("Product with id: " + product.getId_Product() + " correctly updated");
+
+            return ResponseEntity.ok("Product with ID " + product.getId_Product() + " updated successfully");
+
         } catch (ProductUpdateException e) {
-            logger.error(e.getMessage());
+            logger.error("❌ [UPDATE FAILED] ➤ {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
+                    .body("Error updating product: " + e.getMessage());
+        } catch (Exception e) {
+            logger.error("❌ [UNEXPECTED ERROR] ➤ {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Unexpected error: " + e.getMessage());
         }
     }
 
@@ -346,16 +393,17 @@ public class RestControllerProduct {
     }
 
     /*
-     * "This endpoint is another one of the most important points; it will be responsible for handling the pagination of our
-     *  website in order to display the products in a segmented manner."
+     * "This endpoint is another one of the most important points; it will be
+     * responsible for handling the pagination of our
+     * website in order to display the products in a segmented manner."
      */
     @Operation(summary = "List all products", description = "Endpoint to retrieve all products in the system", method = "GET")
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     @GetMapping("/findAllProducts/{page}/{size}")
-    public ResponseEntity<?> getAllProducts(@PathVariable Long page,@PathVariable Long size) {
-        try{
+    public ResponseEntity<?> getAllProducts(@PathVariable Long page, @PathVariable Long size) {
+        try {
             Pageable pageable = PageRequest.of(page.intValue(), size.intValue(),
-                Sort.by("name").descending());
+                    Sort.by("name").descending());
             return ResponseEntity.ok(facadeServiceProduct.findAll(pageable));
         } catch (Exception e) {
             logger.error(e.getMessage());
