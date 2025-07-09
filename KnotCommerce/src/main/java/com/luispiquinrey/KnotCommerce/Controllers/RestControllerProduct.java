@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -186,7 +187,7 @@ public class RestControllerProduct {
     }
 
     @Operation(summary = "Delete product", description = "Endpoint to delete a product by ID", method = "DELETE", parameters = {
-        @Parameter(name = "id", description = "ID of the product to delete", required = true)
+            @Parameter(name = "id", description = "ID of the product to delete", required = true)
     })
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     @DeleteMapping("/deleteProduct/{id}")
@@ -221,6 +222,7 @@ public class RestControllerProduct {
                     .body(e.getMessage());
         }
     }
+
     @Operation(summary = "Update product", description = "Endpoint to update an existing product", method = "PUT")
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     @PutMapping("/updateProduct")
@@ -267,7 +269,8 @@ public class RestControllerProduct {
                     ProductPaymentDTO paymentDTO = mapperProductAndPayment.toPaymentDTO(product);
                     paymentDTO.setTactic(Tactic.UPDATE_PRODUCT);
                     rabbitMQPublisher.sendMessageStripe(paymentDTO);
-                    logger.info("💰 [PAYMENT SENT] ➤ Update notification sent for product ID: {}", product.getId_Product());
+                    logger.info("💰 [PAYMENT SENT] ➤ Update notification sent for product ID: {}",
+                            product.getId_Product());
                 } catch (Exception e) {
                     logger.error("❌ [PAYMENT FAILED] ➤ Error sending RabbitMQ message for product {}: {}",
                             product.getId_Product(), e.getMessage());
@@ -288,7 +291,7 @@ public class RestControllerProduct {
     }
 
     @Operation(summary = "Get product by ID", description = "Endpoint to retrieve product details by ID", method = "GET", parameters = {
-        @Parameter(name = "id", description = "ID of the product to delete", required = true)
+            @Parameter(name = "id", description = "ID of the product to delete", required = true)
     })
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     @GetMapping("/getProductById/{id_Product}")
@@ -329,7 +332,7 @@ public class RestControllerProduct {
     }
 
     @Operation(summary = "List products by category", description = "Endpoint to retrieve products based on category name", method = "GET", parameters = {
-        @Parameter(name = "categoryName", description = "Category to find the products", required = true)
+            @Parameter(name = "categoryName", description = "Category to find the products", required = true)
     })
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     @GetMapping("/productsByCategory/{categoryName}")
@@ -344,8 +347,8 @@ public class RestControllerProduct {
     }
 
     @Operation(summary = "List products by price range", description = "Endpoint to retrieve products within a price range", method = "GET", parameters = {
-        @Parameter(name = "minPrice", description = "The min price of the range"),
-        @Parameter(name = "maxPrice", description = "The max price of the range")
+            @Parameter(name = "minPrice", description = "The min price of the range"),
+            @Parameter(name = "maxPrice", description = "The max price of the range")
     })
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     @GetMapping("/productsByPriceRange")
@@ -376,8 +379,8 @@ public class RestControllerProduct {
     }
 
     @Operation(summary = "Update product stock", description = "Endpoint to update the stock quantity of a product", method = "PUT", parameters = {
-        @Parameter(name = "id", description = "Id to update the Stock"),
-        @Parameter(name = "stock", description = "Stock of the product to update")
+            @Parameter(name = "id", description = "Id to update the Stock"),
+            @Parameter(name = "stock", description = "Stock of the product to update")
     })
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     @PutMapping("/updateStock/{id}")
@@ -409,6 +412,31 @@ public class RestControllerProduct {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error retrieving all products: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/images/{id}")
+    public ResponseEntity<?> getImage(@PathVariable("id") Long id_Product) {
+        try {
+            Product product = facadeServiceProduct.getProductOrThrow(id_Product);
+
+            byte[] imageContent = product.getImageContent();
+            String imageType = product.getImageType();
+
+            if (imageContent == null || imageType == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("No image found for product with ID: " + id_Product);
+            }
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(imageType))
+                    .body(imageContent);
+
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
+        } catch (Exception e) {
+            logger.error("Error retrieving image: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error retrieving image: " + e.getMessage());
         }
     }
 }

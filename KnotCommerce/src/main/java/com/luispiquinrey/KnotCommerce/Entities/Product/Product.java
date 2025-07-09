@@ -117,6 +117,7 @@ public abstract class Product implements Serializable {
 
     private String imageType;
 
+    @JsonProperty("content_image")
     @Lob
     private byte[] imageContent;
 

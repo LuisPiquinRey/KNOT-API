@@ -1,0 +1,22 @@
+.grid-knot{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: repeat(2,1fr);
+    gap: 10px;
+    border-radius: 5px;
+}
+.product-knot{
+    background-color: rgb(226, 227, 227);
+    height: 300px;
+    width: 300px;
+    border-radius: 5px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.image-product{
+    height: 100px;
+    width: 100px;
+}
