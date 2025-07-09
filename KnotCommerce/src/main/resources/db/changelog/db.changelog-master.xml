@@ -10,4 +10,7 @@
     <changeSet id="2" author="LuisPiquinRey">
         <sqlFile path="db/migration/V2__add_code_user.sql" relativeToChangelogFile="false" />
     </changeSet>
+    <changeSet id="3" author="LuisPiquinRey">
+        <sqlFile path="db/migration/V3__image_control.sql" relativeToChangelogFile="false" />
+    </changeSet>
 </databaseChangeLog>

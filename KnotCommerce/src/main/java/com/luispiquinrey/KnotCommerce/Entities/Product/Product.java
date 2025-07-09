@@ -35,6 +35,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
@@ -111,6 +112,13 @@ public abstract class Product implements Serializable {
     @Column(name = "version")
     @JsonProperty("version")
     private Integer version;
+
+    private String imageName;
+
+    private String imageType;
+
+    @Lob
+    private byte[] imageContent;
 
     @Schema(description = "Categories to which the product belongs", example = """
                     [
@@ -252,9 +260,34 @@ public abstract class Product implements Serializable {
         return id_Product;
     }
 
-    // Setter protegido para permitir la deserialización por Jackson, pero no exponerlo públicamente
     protected void setIdProduct(Long idProduct) {
         this.id_Product = idProduct;
+    }
+
+    
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+
+    public String getImageType() {
+        return imageType;
+    }
+
+    public void setImageType(String imageType) {
+        this.imageType = imageType;
+    }
+
+    public byte[] getImageContent() {
+        return imageContent;
+    }
+
+    public void setImageContent(byte[] imageContent) {
+        this.imageContent = imageContent;
     }
 
     public String productToJson() throws JsonProcessingException {
