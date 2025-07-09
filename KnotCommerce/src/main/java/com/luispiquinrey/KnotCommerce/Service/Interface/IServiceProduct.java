@@ -2,6 +2,7 @@ package com.luispiquinrey.KnotCommerce.Service.Interface;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import com.luispiquinrey.KnotCommerce.Entities.Category;
 import com.luispiquinrey.KnotCommerce.Entities.Product.Product;
 import com.luispiquinrey.common_tools.Service.ICrudService;
@@ -18,4 +19,5 @@ public interface IServiceProduct extends ICrudService<Product, Long>{
     void updateStock(Long id, int stock);
     List<Product> findAllProducts();
     boolean existsById(Long id_Product);
+    List<Product> findAll(Pageable pageable);
 }

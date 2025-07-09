@@ -7,6 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -342,12 +345,18 @@ public class RestControllerProduct {
         }
     }
 
+    /*
+     * "This endpoint is another one of the most important points; it will be responsible for handling the pagination of our
+     *  website in order to display the products in a segmented manner."
+     */
     @Operation(summary = "List all products", description = "Endpoint to retrieve all products in the system", method = "GET")
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
-    @GetMapping("/findAllProducts")
-    public ResponseEntity<?> getAllProducts() {
-        try {
-            return ResponseEntity.ok(facadeServiceProduct.findAllProducts());
+    @GetMapping("/findAllProducts/{page}/{size}")
+    public ResponseEntity<?> getAllProducts(@PathVariable Long page,@PathVariable Long size) {
+        try{
+            Pageable pageable = PageRequest.of(page.intValue(), size.intValue(),
+                Sort.by("name").descending());
+            return ResponseEntity.ok(facadeServiceProduct.findAll(pageable));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

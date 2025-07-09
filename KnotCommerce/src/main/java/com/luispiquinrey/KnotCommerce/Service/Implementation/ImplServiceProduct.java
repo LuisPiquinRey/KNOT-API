@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -192,4 +194,16 @@ public class ImplServiceProduct implements IServiceProduct {
             return false;
         }
     }
+    public List<Product> findAll(Pageable pageable) {
+    try {
+        Page<Product> page = repositoryProduct.findAll(pageable);
+        List<Product> products = page.getContent();
+        logger.info("\u001B[34m📦 [PAGINATED PRODUCTS] ➤ Retrieved {} products from page {} of {}.\u001B[0m", 
+                products.size(), page.getNumber() + 1, page.getTotalPages());
+        return products;
+    } catch (Exception e) {
+        logger.error("\u001B[31m🚨 [RETRIEVE FAILED] ➤ Error retrieving paginated products.\u001B[0m", e);
+        return List.of();
+    }
+}
 }
