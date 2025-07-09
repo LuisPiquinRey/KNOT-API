@@ -197,7 +197,7 @@ public class ImplServiceProduct implements IServiceProduct {
     public List<Product> findAll(Pageable pageable) {
     try {
         Page<Product> page = repositoryProduct.findAll(pageable);
-        List<Product> products = page.getContent(); // Extract the list from Page
+        List<Product> products = page.getContent();
         logger.info("\u001B[34m📦 [PAGINATED PRODUCTS] ➤ Retrieved {} products from page {} of {}.\u001B[0m", 
                 products.size(), page.getNumber() + 1, page.getTotalPages());
         return products;
