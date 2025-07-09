@@ -28,7 +28,24 @@
     justify-content: space-between;
     position: relative;
 }
-
+.button-signin{
+    border: none;
+    border-radius: 100%;
+    width: 100px;
+    height: 100px;
+}
+.signin-knot{
+    border: none;
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 2px 2px 2px 2px rgb(195, 194, 194);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
 .sign-in-block {
     display: flex;
     align-items: center; 
